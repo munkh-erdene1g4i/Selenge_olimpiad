@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мэдээлэл Зүйн Олимпиадын нэгийн даваа</title>
+    <title>Аймгийн Мэдээлэл Зүйн Олимпиад</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Firebase JS SDK (Compat mode) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,7 +48,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated background canvas */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -57,7 +59,6 @@
             opacity: 0.45;
         }
 
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -73,7 +74,6 @@
             background: #0284c7;
         }
 
-        /* Auto scrolling continuous theory stream */
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
@@ -117,7 +117,6 @@
             box-shadow: 0 0 15px rgba(2, 132, 199, 0.15);
         }
 
-        /* Modern CSS Keyframe Animations */
         @keyframes modalFadeIn {
             from {
                 opacity: 0;
@@ -135,15 +134,6 @@
             }
             50% {
                 box-shadow: 0 0 20px rgba(2, 132, 199, 0.4), 0 0 35px rgba(2, 132, 199, 0.25);
-            }
-        }
-
-        @keyframes floatCard {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-4px);
             }
         }
 
@@ -175,31 +165,24 @@
         <!-- Top Header Navigation Bar -->
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-3">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
-                <!-- Branding -->
                 <div class="flex items-center space-x-3 cursor-pointer" onclick="app.navigateTo('role')">
                     <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center font-bold text-white text-sm tracking-wider shadow-lg">
                         АЗО
                     </div>
                     <div>
                         <h1 class="text-sm font-semibold tracking-wide text-slate-100 uppercase">Аймгийн Мэдээлэл Зүйн Олимпиад</h1>
-                        <p class="text-xs text-slate-400">Улсын Мэдээлэл зүйн олимпиадын нэгийн даваа</p>
+                        <p class="text-xs text-slate-400">Сэлэнгэ аймгийн Мэдээлэл зүйн олимпиадын нэгийн даваа</p>
                     </div>
                 </div>
 
-                <!-- Right Side Info / Status -->
                 <div class="flex items-center space-x-4">
-                    <!-- Dynamic Timer Pill -->
                     <div id="header-timer-box" class="hidden md:flex items-center bg-slate-800/80 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs font-mono text-sky-400 space-x-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span id="header-timer-label">Үлдсэн хугацаа: 02:00:00</span>
                     </div>
 
-                    <!-- User / Status Badge -->
-                    <div id="header-user-info" class="hidden text-xs text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-                        <!-- Populated via JS -->
-                    </div>
+                    <div id="header-user-info" class="hidden text-xs text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700"></div>
 
-                    <!-- Role / Back Action Button -->
                     <button id="header-action-btn" onclick="app.navigateTo('role')" class="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-300 transition duration-150">
                         Нүүр хуудас
                     </button>
@@ -255,94 +238,12 @@
                         </div>
                         <h3 class="text-lg font-semibold text-white mb-2">Системийн Админ</h3>
                         <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                            Зохион байгуулагчийн хэсэг. Цаг эхлүүлэх, сургууль удирдах, зурвас илгээх ба Excel тайлан.
+                            Зохион байгуулагчийн хэсэг. Цаг эхлүүлэх, сурагчдын бодит цагийн дүн харах ба Excel тайлан.
                         </p>
                         <div class="flex items-center text-xs text-emerald-400 font-medium group-hover:underline">
                             Нэвтрэх &rarr;
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- SECTION 5: PUBLIC LIVE LEADERBOARD -->
-            <section id="view-leaderboard" class="hidden flex-1 flex flex-col space-y-6">
-                <!-- Leaderboard Header -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg">
-                    <div>
-                        <span class="px-2.5 py-1 text-xs font-mono rounded bg-sky-950 text-sky-400 border border-sky-800">
-                            ШУУД ДҮН & РАНК
-                        </span>
-                        <h2 class="text-xl font-bold text-white mt-1.5">Одоогийн Нийт Ранк ба Дүн</h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Олимпиадад оролцогч сурагчдын бодит цагийн ранк болон онооны жагсаалт</p>
-                    </div>
-
-                    <!-- Category Filter Buttons -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        <button onclick="app.setPublicRankCategory('all')" id="rank-cat-btn-all" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border bg-sky-600 border-sky-500 text-white transition">
-                            Бүгд
-                        </button>
-                        <button onclick="app.setPublicRankCategory('middle')" id="rank-cat-btn-middle" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-400 hover:text-white transition">
-                            Дунд анги (6-10)
-                        </button>
-                        <button onclick="app.setPublicRankCategory('high')" id="rank-cat-btn-high" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-400 hover:text-white transition">
-                            Ахлах анги (11-12)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Stats Overview Row -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 text-center shadow">
-                        <div class="text-xs text-slate-400">Нийт Оролцогчид</div>
-                        <div id="public-stat-students" class="text-xl font-bold font-mono text-sky-400 mt-1">0</div>
-                    </div>
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 text-center shadow">
-                        <div class="text-xs text-slate-400">100 Оноотой Бодолт</div>
-                        <div id="public-stat-maxed" class="text-xl font-bold font-mono text-emerald-400 mt-1">0</div>
-                    </div>
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 text-center shadow">
-                        <div class="text-xs text-slate-400">Дундаж Оноо</div>
-                        <div id="public-stat-avg" class="text-xl font-bold font-mono text-indigo-400 mt-1">0</div>
-                    </div>
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 text-center shadow">
-                        <div class="text-xs text-slate-400">Нийт Бодолт Илгээсэн</div>
-                        <div id="public-stat-subs" class="text-xl font-bold font-mono text-amber-400 mt-1">0</div>
-                    </div>
-                </div>
-
-                <!-- Search & Filters -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="relative flex-1 w-full max-w-md">
-                        <input type="text" id="public-rank-search" oninput="app.handlePublicRankSearch(this.value)" placeholder="Сурагчийн нэр, сургууль, ангиар хайх..." class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500 transition">
-                        <svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </div>
-                    <div class="text-xs font-mono text-slate-400 flex items-center space-x-2">
-                        <span>Бодит цагийн шинэчлэлт:</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
-                    </div>
-                </div>
-
-                <!-- Leaderboard Table -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-x-auto shadow-lg flex-1">
-                    <table class="w-full text-left text-xs text-slate-300">
-                        <thead class="bg-slate-950 text-slate-400 font-mono uppercase border-b border-slate-800">
-                            <tr>
-                                <th class="p-3 text-center">Ранк</th>
-                                <th class="p-3">Сурагчийн Нэр</th>
-                                <th class="p-3">Сургууль</th>
-                                <th class="p-3">Анги</th>
-                                <th class="p-3">Ангилал</th>
-                                <th class="p-3 text-center">Б1</th>
-                                <th class="p-3 text-center">Б2</th>
-                                <th class="p-3 text-center">Б3</th>
-                                <th class="p-3 text-center font-bold text-emerald-400">Нийт Оноо</th>
-                                <th class="p-3 text-center">Илгээлт</th>
-                            </tr>
-                        </thead>
-                        <tbody id="public-leaderboard-tbody" class="public-leaderboard-tbody divide-y divide-slate-800">
-                            <!-- Dynamically populated -->
-                        </tbody>
-                    </table>
                 </div>
             </section>
 
@@ -389,7 +290,7 @@
                     </div>
                 </div>
 
-                <!-- STATE A: PRE-CONTEST WAITING ROOM (Inside Student View when timer is NOT running) -->
+                <!-- STATE A: PRE-CONTEST WAITING ROOM -->
                 <div id="contest-waiting-area" class="hidden flex-1 flex flex-col justify-center space-y-6 py-6">
                     <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 max-w-3xl mx-auto w-full">
                         <span class="px-3 py-1 text-xs font-mono rounded-full bg-amber-950 text-amber-400 border border-amber-800 inline-block">
@@ -400,39 +301,26 @@
                             Олимпиад эхлэх хүртэл та доорх мэдээлэл зүйн онол, алгоритмууд болон хялбар жишээ бодлогуудыг уншин бэлтгэлээ хангана уу. Админ цаг эхлүүлсэн агшинд бодлогууд автоматаар харагдах болно.
                         </p>
 
-                        <!-- Slow Scrolling Theory & Example Problems Ticker -->
                         <div class="pt-4 border-t border-slate-800">
                             <div class="ticker-wrap rounded-xl bg-slate-950 border border-slate-800 py-4">
-                                <div id="student-waiting-ticker" class="ticker-move slow space-x-6 px-4">
-                                    <!-- Populated dynamically -->
-                                </div>
+                                <div id="student-waiting-ticker" class="ticker-move slow space-x-6 px-4"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- STATE B: ACTIVE CONTEST PROBLEMS & EDITOR (When contest timer IS running) -->
+                <!-- STATE B: ACTIVE CONTEST PROBLEMS & EDITOR -->
                 <div id="contest-active-area" class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
-                    
-                    <!-- Left Sidebar: Problem Selector -->
                     <div class="lg:col-span-3 space-y-3">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-1">
                             Бодлогууд (Нийт 3)
                         </div>
-                        <div id="problem-tabs-list" class="space-y-2">
-                            <!-- Dynamically generated via JS -->
-                        </div>
+                        <div id="problem-tabs-list" class="space-y-2"></div>
                     </div>
 
-                    <!-- Right Column: Active Problem View -->
                     <div class="lg:col-span-9 bg-slate-900/90 border border-slate-800 rounded-xl p-5 md:p-7 flex flex-col justify-between space-y-6">
-                        
-                        <!-- Problem Header & Statement -->
-                        <div id="problem-detail-box" class="space-y-5">
-                            <!-- Populated via JS -->
-                        </div>
+                        <div id="problem-detail-box" class="space-y-5"></div>
 
-                        <!-- Action Bar & Editor -->
                         <div class="space-y-4 border-t border-slate-800 pt-5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-mono font-semibold text-slate-300 uppercase">C++ Эх Код Илгээх</span>
@@ -449,7 +337,6 @@
                             <textarea id="code-editor" rows="11" spellcheck="false" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-emerald-300 focus:outline-none focus:border-sky-500 transition leading-relaxed" placeholder="// C++ кодыг энд хуулан бичнэ үү..."></textarea>
                         </div>
 
-                        <!-- Test Results Matrix / Score Panel -->
                         <div id="test-results-container" class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
                                 <span class="text-xs font-medium text-slate-400">Шалгалтын Тестүүд (Яг 20 тест, тест бүр 5 оноо)</span>
@@ -458,9 +345,7 @@
                                 </span>
                             </div>
 
-                            <div id="test-cases-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-2 pt-2">
-                                <!-- 20 Test boxes generated dynamically -->
-                            </div>
+                            <div id="test-cases-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-2 pt-2"></div>
                         </div>
 
                     </div>
@@ -473,7 +358,7 @@
                 <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
                         <span class="px-2.5 py-1 text-xs font-mono rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                            АДМИН УДИРДЛАГА
+                            АДМИН УДИРДЛАГА (REALTIME SYNCHRONIZED)
                         </span>
                         <h2 class="text-xl font-bold text-white mt-1">Олимпиадын Удирдлага & Аналитик</h2>
                     </div>
@@ -537,7 +422,7 @@
                     <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="font-bold text-white text-sm">Сургуулийн Жагсаалт</h3>
-                            <span class="text-[10px] text-slate-400 font-mono">20 Сургууль</span>
+                            <span id="adm-school-count-badge" class="text-[10px] text-slate-400 font-mono">20 Сургууль</span>
                         </div>
                         <div class="flex space-x-2">
                             <input type="text" id="new-school-name" placeholder="Шинэ сургууль..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
@@ -545,16 +430,14 @@
                                 Нэмэх
                             </button>
                         </div>
-                        <div id="schools-list-grid" class="max-h-28 overflow-y-auto pr-1 grid grid-cols-1 gap-1.5">
-                            <!-- Populated dynamically -->
-                        </div>
+                        <div id="schools-list-grid" class="max-h-28 overflow-y-auto pr-1 grid grid-cols-1 gap-1.5"></div>
                     </div>
                 </div>
 
                 <!-- Admin Tabs for Rankings -->
                 <div class="flex border-b border-slate-800 space-x-4 pt-2">
                     <button onclick="app.switchAdminTab('leaderboard')" id="adm-tab-btn-leaderboard" class="pb-3 text-sm font-medium text-sky-400 border-b-2 border-sky-400">
-                        Сурагчдын Нэгдсэн Ранк
+                        Сурагчдын Нэгдсэн Ранк (Бодит Цагт)
                     </button>
                     <button onclick="app.switchAdminTab('school')" id="adm-tab-btn-school" class="pb-3 text-sm font-medium text-slate-400 hover:text-white">
                         Сургуулиудын Нэгтгэсэн Дүн
@@ -575,15 +458,12 @@
                                     <th class="p-3 text-center">Б1</th>
                                     <th class="p-3 text-center">Б2</th>
                                     <th class="p-3 text-center">Б3</th>
-                                    <th class="p-3 text-center">Б4</th>
                                     <th class="p-3 text-center">Нийт Оноо</th>
                                     <th class="p-3 text-center">Илгээлт</th>
                                     <th class="p-3 text-center text-rose-400">Таб Шилжсэн</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-student-table" class="divide-y divide-slate-800">
-                                <!-- Populated dynamically -->
-                            </tbody>
+                            <tbody id="admin-student-table" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
                 </div>
@@ -602,9 +482,7 @@
                                     <th class="p-3 text-center text-rose-400">Нийт Таб Шилжсэн</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-school-table" class="divide-y divide-slate-800">
-                                <!-- Populated dynamically -->
-                            </tbody>
+                            <tbody id="admin-school-table" class="divide-y divide-slate-800"></tbody>
                         </table>
                     </div>
                 </div>
@@ -615,7 +493,7 @@
         <!-- Footer -->
         <footer class="border-t border-slate-800/80 bg-slate-950 py-4 text-center text-xs text-slate-500 space-y-1">
             <div>Аймгийн Мэдээлэл Зүйн Олимпиад &copy; 2026. Бүх эрх хуулиар хамгаалагдсан.</div>
-            <div class="text-[10px] text-slate-600 font-mono tracking-tight">Мандал сумын 4р сургуулийн туршилтын сервер</div>
+            <div class="text-[10px] text-slate-600 font-mono tracking-tight">Мандал сумын 4р сургууль | Сэлэнгэ Аймаг</div>
         </footer>
     </div>
 
@@ -629,9 +507,7 @@
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block font-medium text-slate-300 mb-1">Сургууль</label>
-                    <select id="reg-school-select" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500">
-                        <!-- Populated via JS -->
-                    </select>
+                    <select id="reg-school-select" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500"></select>
                 </div>
                 <div>
                     <label class="block font-medium text-slate-300 mb-1">Анги (Жишээ нь: 9А, 11Б)</label>
@@ -653,7 +529,7 @@
         </div>
     </div>
 
-    <!-- MODAL 1: PROCTORING WARNING (Tab Switch Detector) -->
+    <!-- MODAL 1: PROCTORING WARNING -->
     <div id="proctor-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-rose-900/80 rounded-2xl p-6 max-w-md w-full shadow-2xl text-center space-y-4">
             <div class="w-12 h-12 rounded-full bg-rose-950 border border-rose-800 flex items-center justify-center mx-auto text-rose-400 font-bold font-mono">
@@ -699,13 +575,9 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                 <h3 class="text-sm font-bold text-white">Жишээ Оролт ба Гаралтын Өгөгдөл</h3>
-                <button onclick="app.closeTestDataModal()" class="text-xs text-slate-400 hover:text-white px-2 py-1">
-                    Хаах
-                </button>
+                <button onclick="app.closeTestDataModal()" class="text-xs text-slate-400 hover:text-white px-2 py-1">Хаах</button>
             </div>
-            <div id="test-data-content" class="space-y-3 text-xs font-mono">
-                <!-- Dynamically populated -->
-            </div>
+            <div id="test-data-content" class="space-y-3 text-xs font-mono"></div>
         </div>
     </div>
 
@@ -717,7 +589,7 @@
             </div>
             <h3 class="text-lg font-bold text-white">Бүх сурагчдын датаг устгах уу?</h3>
             <p class="text-xs text-slate-300 leading-relaxed">
-                Энэ үйлдэл нь олимпиадад бүртгэгдсэн бүх сурагчдын оноо, илгээсэн бодолт болон таб шилжилтийн түүхийг бүрэн арилгана. Устгасан датаг дахин сэргээх боломжгүй.
+                Энэ үйлдэл нь олимпиадад бүртгэгдсэн бүх сурагчдын оноо, илгээсэн бодолт болон таб шилжилтийн түүхийг Firebase ба санамжнаас бүрэн арилгана.
             </p>
             <div class="flex space-x-3 pt-2">
                 <button onclick="app.closeClearDataModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-lg text-xs border border-slate-700 transition">
@@ -730,86 +602,39 @@
         </div>
     </div>
 
-    <!-- MODAL 5: PUBLIC LIVE LEADERBOARD POPUP MODAL -->
-    <div id="leaderboard-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 max-w-5xl w-full max-h-[90vh] flex flex-col shadow-2xl space-y-4 overflow-hidden animated-modal">
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div>
-                    <span class="px-2.5 py-0.5 text-[10px] font-mono rounded bg-sky-950 text-sky-400 border border-sky-800 uppercase">
-                        ШУУД ДҮН & РАНК
-                    </span>
-                    <h3 class="text-base sm:text-lg font-bold text-white mt-1">Одоогийн Нийт Ранк ба Дүн</h3>
-                </div>
-                <button onclick="app.closeLeaderboardModal()" class="p-1.5 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition text-xs font-semibold">
-                    ✕ Хаах
-                </button>
-            </div>
-
-            <!-- Category Filters & Search -->
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                    <button onclick="app.setPublicRankCategory('all')" id="modal-rank-cat-btn-all" class="rank-cat-btn-all px-3 py-1 rounded-lg text-xs font-semibold border bg-sky-600 border-sky-500 text-white transition">
-                        Бүгд
-                    </button>
-                    <button onclick="app.setPublicRankCategory('middle')" id="modal-rank-cat-btn-middle" class="rank-cat-btn-middle px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-400 hover:text-white transition">
-                        Дунд (6-10)
-                    </button>
-                    <button onclick="app.setPublicRankCategory('high')" id="modal-rank-cat-btn-high" class="rank-cat-btn-high px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-400 hover:text-white transition">
-                        Ахлах (11-12)
-                    </button>
-                </div>
-                <div class="relative w-full sm:w-72">
-                    <input type="text" id="modal-public-rank-search" oninput="app.handlePublicRankSearch(this.value)" placeholder="Нэр, сургууль, ангиар хайх..." class="w-full bg-slate-950 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
-                    <svg class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </div>
-            </div>
-
-            <!-- Table Container -->
-            <div class="flex-1 overflow-y-auto border border-slate-800 rounded-xl bg-slate-950/50">
-                <table class="w-full text-left text-xs text-slate-300">
-                    <thead class="bg-slate-950 text-slate-400 font-mono uppercase border-b border-slate-800 sticky top-0 z-10">
-                        <tr>
-                            <th class="p-2.5 text-center">Ранк</th>
-                            <th class="p-2.5">Сурагчийн Нэр</th>
-                            <th class="p-2.5">Сургууль</th>
-                            <th class="p-2.5">Анги</th>
-                            <th class="p-2.5">Ангилал</th>
-                            <th class="p-2.5 text-center">Б1</th>
-                            <th class="p-2.5 text-center">Б2</th>
-                            <th class="p-2.5 text-center">Б3</th>
-                            <th class="p-2.5 text-center font-bold text-emerald-400">Нийт Оноо</th>
-                            <th class="p-2.5 text-center">Илгээлт</th>
-                        </tr>
-                    </thead>
-                    <tbody id="modal-public-leaderboard-tbody" class="public-leaderboard-tbody divide-y divide-slate-800">
-                        <!-- Populated dynamically -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Synthesized Audio Helper for Chimes and Alerts
+        // -------------------------------------------------------------
+        // FIREBASE REALTIME DATABASE INITIALIZATION
+        // -------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyABeedU858DJ8815aObeD9jQnwKz86j8Xc",
+            authDomain: "selenge-691f9.firebaseapp.com",
+            databaseURL: "https://selenge-691f9-default-rtdb.firebaseio.com",
+            projectId: "selenge-691f9",
+            storageBucket: "selenge-691f9.firebasestorage.app",
+            messagingSenderId: "715865410702",
+            appId: "1:715865410702:web:36838edb8469b731810ddf",
+            measurementId: "G-K1CR7GRWFG"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Synthesized Audio Helper
         class SoundEffects {
-            constructor() {
-                this.ctx = null;
-            }
+            constructor() { this.ctx = null; }
             init() {
                 if (!this.ctx) {
                     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContextClass) {
-                        this.ctx = new AudioContextClass();
-                    }
+                    if (AudioContextClass) this.ctx = new AudioContextClass();
                 }
             }
             playStartChime() {
                 this.init();
                 if (!this.ctx) return;
-                const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+                const notes = [261.63, 329.63, 392.00, 523.25];
                 notes.forEach((freq, idx) => {
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
@@ -826,7 +651,7 @@
             playWarningChime() {
                 this.init();
                 if (!this.ctx) return;
-                const notes = [440, 349.23, 440, 349.23]; // A4, F4, A4, F4
+                const notes = [440, 349.23, 440, 349.23];
                 notes.forEach((freq, idx) => {
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
@@ -843,7 +668,7 @@
             playScoreChime() {
                 this.init();
                 if (!this.ctx) return;
-                const notes = [523.25, 659.25]; // Soft, pleasant C5 & E5 chime
+                const notes = [523.25, 659.25];
                 notes.forEach((freq, idx) => {
                     const osc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
@@ -861,7 +686,6 @@
 
         const soundManager = new SoundEffects();
 
-        // Default 20 Schools Data
         const DEFAULT_SCHOOLS = [
             "1-р сургууль", "2-р сургууль", "3-р сургууль", "4-р сургууль", "5-р сургууль",
             "6-р сургууль", "7-р сургууль", "8-р сургууль", "9-р сургууль", "10-р сургууль",
@@ -870,7 +694,6 @@
             "Орхон сургууль", "Алтанбулаг сургууль"
         ];
 
-        // 10+ Informatics Theory & Algorithms Data with Easy Examples
         const THEORY_ITEMS = [
             { title: "Давхардалгүй санаж бодох арга", desc: "Дэд бодлогуудын шийдлийг дахин дахин бодохгүйгээр санан ашиглах алгоритмын арга." },
             { title: "Жишээ Бодлого: Фибоначчийн цуваа", desc: "Дарааллын дараагийн гишүүнийг өмнөх хоёр гишүүний нийлбэрээр бодож олох." },
@@ -884,19 +707,17 @@
             { title: "Дарааллын урьдчилсан нийлбэр", desc: "Өмнөх элементүүдийн нийлбэрийг бэлдсэнээр завсрын нийлбэрийг хоромхон зуурт олох арга." }
         ];
 
-        // Reference Solvers for 20 Test Case Generation
+        // Solvers
         function solve_m1(inputStr) {
             const tokens = inputStr.trim().split(/\s+/).map(Number);
             if (tokens.length < 2) return "";
-            const a = tokens[0], h = tokens[1];
-            return `${a * h}\n${2 * (a + h)}`;
+            return `${tokens[0] * tokens[1]}\n${2 * (tokens[0] + tokens[1])}`;
         }
 
         function solve_m2(inputStr) {
             const s = inputStr.trim().split(/\s+/)[0] || "";
             let sum = 0, evenCount = 0;
-            for (let i = 0; i < s.length; i++) {
-                const char = s[i];
+            for (let char of s) {
                 if (char >= '0' && char <= '9') {
                     const digit = parseInt(char, 10);
                     sum += digit;
@@ -938,41 +759,27 @@
             if (tokens.length < 3) return "";
             const n = tokens[0];
             const intervals = [];
-            for (let i = 0; i < n; i++) {
-                intervals.push([tokens[1 + 2 * i], tokens[2 + 2 * i]]);
-            }
+            for (let i = 0; i < n; i++) intervals.push([tokens[1 + 2 * i], tokens[2 + 2 * i]]);
             intervals.sort((a, b) => a[0] - b[0]);
             const merged = [];
             for (let inv of intervals) {
-                if (merged.length === 0) {
-                    merged.push(inv);
-                } else {
+                if (merged.length === 0) merged.push(inv);
+                else {
                     let last = merged[merged.length - 1];
-                    if (inv[0] <= last[1]) {
-                        last[1] = Math.max(last[1], inv[1]);
-                    } else {
-                        merged.push(inv);
-                    }
+                    if (inv[0] <= last[1]) last[1] = Math.max(last[1], inv[1]);
+                    else merged.push(inv);
                 }
             }
-            let total = 0;
-            for (let inv of merged) {
-                total += (inv[1] - inv[0]);
-            }
-            return `${total}`;
+            return `${merged.reduce((sum, inv) => sum + (inv[1] - inv[0]), 0)}`;
         }
 
         function solve_h3(inputStr) {
             const s = inputStr.trim().split(/\s+/)[0] || "";
             if (!s) return "";
-            let res = "";
-            let i = 0;
+            let res = "", i = 0;
             while (i < s.length) {
                 let count = 1;
-                while (i + 1 < s.length && s[i] === s[i + 1]) {
-                    count++;
-                    i++;
-                }
+                while (i + 1 < s.length && s[i] === s[i + 1]) { count++; i++; }
                 res += s[i] + count;
                 i++;
             }
@@ -982,256 +789,142 @@
         function getTestCasesForProblem(pId) {
             const tests = [];
             if (pId === 'm1') {
-                const inputs = [
-                    '10 5', '1 1', '100 200', '25 40', '12 12',
-                    '50 50', '5 100', '100 5', '7 8', '15 30',
-                    '99 100', '3 4', '500 1000', '20 15', '8 6',
-                    '14 2', '30 40', '45 55', '60 70', '80 90'
-                ];
-                inputs.forEach(inp => tests.push({ input: inp, expected: solve_m1(inp) }));
+                ['10 5', '1 1', '100 200', '25 40', '12 12', '50 50', '5 100', '100 5', '7 8', '15 30', '99 100', '3 4', '500 1000', '20 15', '8 6', '14 2', '30 40', '45 55', '60 70', '80 90'].forEach(inp => tests.push({ input: inp, expected: solve_m1(inp) }));
             } else if (pId === 'm2') {
-                const inputs = [
-                    '123456', '0', '9', '24680', '13579',
-                    '10203040', '9999999999', '1111111111', '0000000', '88888888',
-                    '1234567890', '50505050', '20242025', '9876543210', '123123123',
-                    '444555666', '1000000000', '7778889990', '2468135709', '908070605040302010'
-                ];
-                inputs.forEach(inp => tests.push({ input: inp, expected: solve_m2(inp) }));
+                ['123456', '0', '9', '24680', '13579', '10203040', '9999999999', '1111111111', '0000000', '88888888', '1234567890', '50505050', '20242025', '9876543210', '123123123', '444555666', '1000000000', '7778889990', '2468135709', '908070605040302010'].forEach(inp => tests.push({ input: inp, expected: solve_m2(inp) }));
             } else if (pId === 'm3') {
-                const inputs = [
-                    '5\n-2 1 3 -1 2', '4\n-5 -2 -1 -4', '6\n1 2 3 4 5 6', '1\n10', '1\n-10',
-                    '5\n2 3 -2 4 -1', '4\n-1 2 3 -4', '7\n-2 -3 4 -1 -2 1 5 -3', '3\n5 4 -1',
-                    '5\n-10 20 -5 15 -30', '6\n-2 1 -3 4 -1 2', '5\n10 -5 10 -5 10',
-                    '8\n1 -2 3 -4 5 -6 7 -8', '4\n100 200 -500 400', '6\n-10 -20 30 40 -50 60',
-                    '5\n-1 -1 -1 -1 100', '3\n-10 0 -5', '4\n0 0 0 0', '5\n15 -20 25 -30 35', '7\n1 1 1 1 1 1 1'
-                ];
-                inputs.forEach(inp => tests.push({ input: inp, expected: solve_m3(inp) }));
+                ['5\n-2 1 3 -1 2', '4\n-5 -2 -1 -4', '6\n1 2 3 4 5 6', '1\n10', '1\n-10', '5\n2 3 -2 4 -1', '4\n-1 2 3 -4', '7\n-2 -3 4 -1 -2 1 5 -3', '3\n5 4 -1', '5\n-10 20 -5 15 -30', '6\n-2 1 -3 4 -1 2', '5\n10 -5 10 -5 10', '8\n1 -2 3 -4 5 -6 7 -8', '4\n100 200 -500 400', '6\n-10 -20 30 40 -50 60', '5\n-1 -1 -1 -1 100', '3\n-10 0 -5', '4\n0 0 0 0', '5\n15 -20 25 -30 35', '7\n1 1 1 1 1 1 1'].forEach(inp => tests.push({ input: inp, expected: solve_m3(inp) }));
             } else if (pId === 'h1') {
-                const inputs = [
-                    '5\n80 120 150 90 200', '1\n500', '3\n10 10 10', '4\n0 0 0 0', '6\n5 12 99 4 2 1',
-                    '5\n100 200 300 400 500', '5\n500 400 300 200 100', '7\n10 50 20 50 30 50 10',
-                    '2\n15 45', '3\n999 1 2', '4\n1 2 999 3', '5\n10 20 30 40 999',
-                    '6\n100 100 100 100 100 200', '8\n1 2 3 4 5 6 7 8', '4\n800 100 200 300',
-                    '5\n45 90 180 360 720', '3\n50 150 100', '6\n1 1 1 1 1 100',
-                    '2\n1000 1000', '5\n300 100 500 200 400'
-                ];
-                inputs.forEach(inp => tests.push({ input: inp, expected: solve_h1(inp) }));
+                ['5\n80 120 150 90 200', '1\n500', '3\n10 10 10', '4\n0 0 0 0', '6\n5 12 99 4 2 1', '5\n100 200 300 400 500', '5\n500 400 300 200 100', '7\n10 50 20 50 30 50 10', '2\n15 45', '3\n999 1 2', '4\n1 2 999 3', '5\n10 20 30 40 999', '6\n100 100 100 100 100 200', '8\n1 2 3 4 5 6 7 8', '4\n800 100 200 300', '5\n45 90 180 360 720', '3\n50 150 100', '6\n1 1 1 1 1 100', '2\n1000 1000', '5\n300 100 500 200 400'].forEach(inp => tests.push({ input: inp, expected: solve_h1(inp) }));
             } else if (pId === 'h2') {
-                const inputs = [
-                    '3\n1 5\n3 8\n10 12', '1\n5 15', '4\n1 3\n2 6\n8 10\n15 18', '3\n1 10\n2 5\n3 7', '5\n1 2\n3 4\n5 6\n7 8\n9 10',
-                    '2\n10 20\n20 30', '4\n10 15\n12 18\n14 20\n19 25', '3\n100 200\n150 250\n220 300', '5\n0 10\n5 15\n10 20\n15 25\n20 30', '2\n1 100\n50 60',
-                    '4\n5 10\n1 3\n2 6\n8 12', '3\n1 4\n2 3\n5 8', '6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7', '3\n1000 2000\n3000 4000\n5000 6000', '4\n10 30\n20 40\n50 70\n60 80',
-                    '5\n1 5\n5 10\n10 15\n15 20\n20 25', '2\n1 1000\n100 200', '3\n10 20\n30 40\n15 35', '4\n1 10\n11 20\n21 30\n31 40', '5\n10 50\n20 40\n30 60\n70 80\n75 85'
-                ];
-                inputs.forEach(inp => tests.push({ input: inp, expected: solve_h2(inp) }));
+                ['3\n1 5\n3 8\n10 12', '1\n5 15', '4\n1 3\n2 6\n8 10\n15 18', '3\n1 10\n2 5\n3 7', '5\n1 2\n3 4\n5 6\n7 8\n9 10', '2\n10 20\n20 30', '4\n10 15\n12 18\n14 20\n19 25', '3\n100 200\n150 250\n220 300', '5\n0 10\n5 15\n10 20\n15 25\n20 30', '2\n1 100\n50 60', '4\n5 10\n1 3\n2 6\n8 12', '3\n1 4\n2 3\n5 8', '6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 7', '3\n1000 2000\n3000 4000\n5000 6000', '4\n10 30\n20 40\n50 70\n60 80', '5\n1 5\n5 10\n10 15\n15 20\n20 25', '2\n1 1000\n100 200', '3\n10 20\n30 40\n15 35', '4\n1 10\n11 20\n21 30\n31 40', '5\n10 50\n20 40\n30 60\n70 80\n75 85'].forEach(inp => tests.push({ input: inp, expected: solve_h2(inp) }));
             } else if (pId === 'h3') {
-                const inputs = [
-                    'AAABBCCCCDD', 'A', 'AAAAA', 'ABC', 'AABBCC',
-                    'ABABAB', 'ZZZZZZZZZZ', 'AABBBCCCCDDDDD', 'X', 'XYZZYX',
-                    'AAAAAABBBBBBCCCCCC', 'AAABBC', 'BBAAACCDDDDD', 'MNOMNOMNO', 'K',
-                    'KKKKKKKKKKKKKKKKKKKK', 'AABAA', 'PQRST', 'WWWWWWWWWWWWWWWWWWWWWWWWWW', 'SELENGE'
-                ];
-                inputs.forEach(inp => tests.push({ input: inp, expected: solve_h3(inp) }));
+                ['AAABBCCCCDD', 'A', 'AAAAA', 'ABC', 'AABBCC', 'ABABAB', 'ZZZZZZZZZZ', 'AABBBCCCCDDDDD', 'X', 'XYZZYX', 'AAAAAABBBBBBCCCCCC', 'AAABBC', 'BBAAACCDDDDD', 'MNOMNOMNO', 'K', 'KKKKKKKKKKKKKKKKKKKK', 'AABAA', 'PQRST', 'WWWWWWWWWWWWWWWWWWWWWWWWWW', 'SELENGE'].forEach(inp => tests.push({ input: inp, expected: solve_h3(inp) }));
             }
             return tests;
         }
 
-        // Problems Repository
         const PROBLEMS = {
             middle: [
-                {
-                    id: 'm1',
-                    title: 'Бодлого 1: Малчны өвөлжөөний хашааны талбай',
-                    diff: 'Хялбар',
-                    points: 100,
-                    story: 'Малчны өвөлжөөний тэгш өнцөгт хэлбэртэй хашааны урт A ба өндөр H өгөгдөнө. Хашааны нийт талбай ба хүрээний уртыг (периметр) олно уу.',
-                    inputFmt: 'Нэг мөрөнд хашааны урт A ба өндөр H (бүхэл тоонууд).',
-                    outputFmt: 'Эхний мөрөнд талбай. Хоёрдугаар мөрөнд хүрээний урт.',
-                    constraints: '1 ≤ A, H ≤ 1000',
-                    sampleIn: '10 5',
-                    sampleOut: '50\n30'
-                },
-                {
-                    id: 'm2',
-                    title: 'Бодлого 2: Нууц кодын цифрүүдийн шинж чанар',
-                    diff: 'Хялбар',
-                    points: 100,
-                    story: 'Сургуулийн мэдээллийн системд сурагч бүрт давтагдашгүй нууц код олгодог бөгөөд уг код нь зөвхөн 0-9 хүртэлх цифрүүдээс бүрдсэн тэмдэгт мөр байдаг. Системийн администратор нууц кодын бүтцийг судалж, код доторх цифрүүдийн шинж чанарыг тодорхойлох шаардлагатай болжээ.\n\nТэрээр кодонд агуулагдаж буй бүх цифрийн нийлбэр болон тэгш цифрийн тоог мэдэхийг хүсэж байна. Тухайлбал, 123456 гэсэн кодын цифрүүдийн нийлбэр нь 21 бөгөөд 2, 4, 6 гэсэн нийт 3 тэгш цифр агуулагдаж байна.\n\nТанд өгөгдсөн нууц кодын цифрүүдийн нийлбэр болон тэгш цифрийн тоог тодорхойлж хэвлэх программ бичнэ үү.',
-                    inputFmt: 'Нэг мөрөнд зөвхөн цифрүүдээс бүрдэх, хоосон биш S тэмдэгт мөр өгөгдөнө.',
-                    outputFmt: 'Эхний тоо нь цифрүүдийн нийлбэр, хоёр дахь тоо нь тэгш цифрийн тоо байна.',
-                    constraints: '1 ≤ |S| ≤ 1000, S нь зөвхөн 0-9 цифрээс бүрдэнэ.',
-                    sampleIn: '123456',
-                    sampleOut: '21 3'
-                },
-                {
-                    id: 'm3',
-                    title: 'Бодлого 3: Дарааллын хамгийн их дэд хэсгийн нийлбэр',
-                    diff: 'Дундаж',
-                    points: 100,
-                    story: 'Сэлэнгэ аймгийн цаг уурын ажиглалтын N хоногийн агаарын температурын өөрчлөлтүүд (сөрөг ба эерэг бүхэл тоонууд) өгөгдөнө. Дараалсан хэд хэдэн хоногийн температурын өөрчлөлтийн хамгийн их нийлбэрийг олно уу.',
-                    inputFmt: 'Эхний мөрөнд N. Хоёр дахь мөрөнд N ширхэг бүхэл тоо.',
-                    outputFmt: 'Дараалсан дэд хэсгийн хамгийн их нийлбэр.',
-                    constraints: '1 ≤ N ≤ 10<sup>5</sup>, -1000 ≤ A<sub>i</sub> ≤ 1000',
-                    sampleIn: '5\n-2 1 3 -1 2',
-                    sampleOut: '5'
-                }
+                { id: 'm1', title: 'Бодлого 1: Малчны өвөлжөөний хашааны талбай', diff: 'Хялбар', points: 100, story: 'Малчны өвөлжөөний тэгш өнцөгт хэлбэртэй хашааны урт A ба өндөр H өгөгдөнө. Хашааны нийт талбай ба хүрээний уртыг (периметр) олно уу.', inputFmt: 'Нэг мөрөнд хашааны урт A ба өндөр H (бүхэл тоонууд).', outputFmt: 'Эхний мөрөнд талбай. Хоёрдугаар мөрөнд хүрээний урт.', constraints: '1 ≤ A, H ≤ 1000', sampleIn: '10 5', sampleOut: '50\n30' },
+                { id: 'm2', title: 'Бодлого 2: Нууц кодын цифрүүдийн шинж чанар', diff: 'Хялбар', points: 100, story: 'Сургуулийн мэдээллийн системд сурагч бүрт давтагдашгүй нууц код олгодог бөгөөд уг код нь зөвхөн 0-9 хүртэлх цифрүүдээс бүрдсэн тэмдэгт мөр байдаг.\n\nТанд өгөгдсөн нууц кодын цифрүүдийн нийлбэр болон тэгш цифрийн тоог тодорхойлж хэвлэх программ бичнэ үү.', inputFmt: 'Нэг мөрөнд зөвхөн цифрүүдээс бүрдэх, хоосон биш S тэмдэгт мөр өгөгдөнө.', outputFmt: 'Эхний тоо нь цифрүүдийн нийлбэр, хоёр дахь тоо нь тэгш цифрийн тоо байна.', constraints: '1 ≤ |S| ≤ 1000, S нь зөвхөн 0-9 цифрээс бүрдэнэ.', sampleIn: '123456', sampleOut: '21 3' },
+                { id: 'm3', title: 'Бодлого 3: Дарааллын хамгийн их дэд хэсгийн нийлбэр', diff: 'Дундаж', points: 100, story: 'Сэлэнгэ аймгийн цаг уурын ажиглалтын N хоногийн агаарын температурын өөрчлөлтүүд (сөрөг ба эерэг бүхэл тоонууд) өгөгдөнө. Дараалсан хэд хэдэн хоногийн температурын өөрчлөлтийн хамгийн их нийлбэрийг олно уу.', inputFmt: 'Эхний мөрөнд N. Хоёр дахь мөрөнд N ширхэг бүхэл тоо.', outputFmt: 'Дараалсан дэд хэсгийн хамгийн их нийлбэр.', constraints: '1 ≤ N ≤ 10<sup>5</sup>, -1000 ≤ A<sub>i</sub> ≤ 1000', sampleIn: '5\n-2 1 3 -1 2', sampleOut: '5' }
             ],
             high: [
-                {
-                    id: 'h1',
-                    title: 'Бодлого 1: Сумдын ургацын мэдээлэл',
-                    diff: 'Хялбар',
-                    points: 100,
-                    story: 'Сэлэнгэ аймгийн Хөдөө Аж Ахуйн Газраас энэ жилийн хураан авсан буудайн ургацын мэдээллийг нэгтгэж байна. Аймагт N сумын тариалангийн талбай байх ба сум тус бүр A<sub>i</sub> тонноор ургац хураан авсан. Сумдын хураан авсан нийт ургацын хэмжээ болон хамгийн их ургац хураан авсан сумын дугаарыг олно уу.',
-                    inputFmt: 'Эхний мөрөнд N (сумдын тоо). Хоёрдугаар мөрөнд N ширхэг бүхэл тоо A<sub>1</sub>, A<sub>2</sub>, ..., A<sub>N</sub> байна.',
-                    outputFmt: 'Эхний мөрөнд нийт ургацын хэмжээ. Хоёрдугаар мөрөнд хамгийн их ургацтай сумын 1-ээс эхэлсэн дугаар.',
-                    constraints: '1 ≤ N ≤ 1000, 0 ≤ A<sub>i</sub> ≤ 10<sup>5</sup>',
-                    sampleIn: '5\n80 120 150 90 200',
-                    sampleOut: '640\n5'
-                },
-                {
-                    id: 'h2',
-                    title: 'Бодлого 2: Аймгийн цахилгаан шугамын засварын урт',
-                    diff: 'Хүндэвтэр',
-                    points: 100,
-                    story: 'Сэлэнгэ аймгийн эрчим хүчний газраас N ширхэг шугамын засварын завсар [L<sub>i</sub>, R<sub>i</sub>] зарлажээ. Энэ нь L<sub>i</sub>-ээс R<sub>i</sub> хүртэлх километр зайд цахилгаан шугам засагдаж байгааг илтгэнэ. Зарим засварын хэсгүүд хоорондоо давхцаж болно. Давхардсан засварын хэсгүүдийг нэгтгэсний дараа нийт засагдаж буй шугамын замын уртыг олно уу.',
-                    inputFmt: 'Эхний мөрөнд N (засварын хэсгүүдийн тоо). Дараагийн N мөр бүрт хоёр бүхэл тоо L<sub>i</sub>, R<sub>i</sub> (засварын эхлэх ба дуусах замын км).',
-                    outputFmt: 'Нийт засагдаж буй шугамын урт (км).',
-                    constraints: '1 ≤ N ≤ 1000, 0 ≤ L<sub>i</sub> ≤ R<sub>i</sub> ≤ 10<sup>5</sup>',
-                    sampleIn: '3\n1 5\n3 8\n10 12',
-                    sampleOut: '9'
-                },
-                {
-                    id: 'h3',
-                    title: 'Бодлого 3: Тэмдэгт мөрийн шахалт',
-                    diff: 'Ахисан',
-                    points: 100,
-                    story: 'Мэдээллийн технологийн лабораторид текст мэдээллийг хадгалах зайг багасгах нэгэн энгийн аргыг туршиж байна. Үүний тулд дараалсан ижил тэмдэгтүүдийг тус бүрээр нь бичихийн оронд тухайн тэмдэгтийг нэг удаа бичиж, ард нь хэдэн удаа давтагдсаныг илэрхийлэх тоог залгаж бичихээр болжээ.\n\nЖишээлбэл, AAABBCCCCDD гэсэн тэмдэгт мөрийг шахахад A3B2C4D2 гэсэн үр дүн гарна. Энд A тэмдэгт 3 удаа, B тэмдэгт 2 удаа, C тэмдэгт 4 удаа, D тэмдэгт 2 удаа дараалан давтагдсан байна.\n\nТэмдэгтүүд өөр өөр дарааллаар дахин гарч ирж болох бөгөөд зөвхөн дараалсан ижил тэмдэгтүүдийг нэг бүлэг гэж үзнэ.\n\nТаны даалгавар бол өгөгдсөн тэмдэгт мөрийг дээрх аргаар шахаж, үүссэн шинэ тэмдэгт мөрийг хэвлэх программ бичих юм.',
-                    inputFmt: 'Нэг мөрөнд англи том үсгүүдээс бүрдэх S тэмдэгт мөр өгөгдөнө.',
-                    outputFmt: 'Шахалтын үр дүнд үүссэн тэмдэгт мөрийг хэвлэнэ.',
-                    constraints: '1 ≤ |S| ≤ 100000, S нь зөвхөн A-Z тэмдэгтээс бүрдэнэ.',
-                    sampleIn: 'AAABBCCCCDD',
-                    sampleOut: 'A3B2C4D2'
-                }
+                { id: 'h1', title: 'Бодлого 1: Сумдын ургацын мэдээлэл', diff: 'Хялбар', points: 100, story: 'Сэлэнгэ аймгийн Хөдөө Аж Ахуйн Газраас энэ жилийн хураан авсан буудайн ургацын мэдээллийг нэгтгэж байна. N сумын хураан авсан нийт ургацын хэмжээ болон хамгийн их ургацтай сумын дугаарыг олно уу.', inputFmt: 'Эхний мөрөнд N. Хоёрдугаар мөрөнд N ширхэг бүхэл тоо.', outputFmt: 'Эхний мөрөнд нийт ургац. Хоёрдугаар мөрөнд хамгийн их ургацтай сумын дугаар.', constraints: '1 ≤ N ≤ 1000, 0 ≤ A<sub>i</sub> ≤ 10<sup>5</sup>', sampleIn: '5\n80 120 150 90 200', sampleOut: '640\n5' },
+                { id: 'h2', title: 'Бодлого 2: Аймгийн цахилгаан шугамын засварын урт', diff: 'Хүндэвтэр', points: 100, story: 'N ширхэг шугамын засварын завсар [L<sub>i</sub>, R<sub>i</sub>] өгөгдөнө. Давхардсан засварын хэсгүүдийг нэгтгэсний дараа нийт засагдаж буй шугамын замын уртыг олно уу.', inputFmt: 'Эхний мөрөнд N. Дараагийн N мөр бүрт L<sub>i</sub>, R<sub>i</sub>.', outputFmt: 'Нийт засагдаж буй шугамын урт.', constraints: '1 ≤ N ≤ 1000, 0 ≤ L<sub>i</sub> ≤ R<sub>i</sub> ≤ 10<sup>5</sup>', sampleIn: '3\n1 5\n3 8\n10 12', sampleOut: '9' },
+                { id: 'h3', title: 'Бодлого 3: Тэмдэгт мөрийн шахалт', diff: 'Ахисан', points: 100, story: 'Дараалсан ижил тэмдэгтүүдийг тус бүрээр нь бичихийн оронд тухайн тэмдэгтийг нэг удаа бичиж, ард нь хэдэн удаа давтагдсаныг илэрхийлэх тоог залгаж бичнэ.\n\nӨгөгдсөн S тэмдэгт мөрийг шахаж хэвлэнэ үү.', inputFmt: 'Нэг мөрөнд англи том үсгүүдээс бүрдэх S тэмдэгт мөр өгөгдөнө.', outputFmt: 'Шахалтын үр дүнд үүссэн тэмдэгт мөр.', constraints: '1 ≤ |S| ≤ 100000, S нь зөвхөн A-Z тэмдэгтээс бүрдэнэ.', sampleIn: 'AAABBCCCCDD', sampleOut: 'A3B2C4D2' }
             ]
         };
 
-        // Comparison and C++ Simulation Helpers
         function compareOutputs(actual, expected) {
             if (actual === null || actual === undefined) return false;
-            const normActual = String(actual).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ');
-            const normExpected = String(expected).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ');
-            return normActual === normExpected;
+            return String(actual).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ') === String(expected).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ');
         }
 
         function executeCppCode(codeStr, inputStr) {
             if (!codeStr || !codeStr.trim()) return "";
-            
             const cleanCode = codeStr.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
-            const inputTokens = inputStr.trim().split(/\s+/).filter(Boolean);
-            let tokenIdx = 0;
-            
-            function readToken() {
-                return tokenIdx < inputTokens.length ? inputTokens[tokenIdx++] : "0";
-            }
-
-            let outputBuffer = "";
-
-            try {
-                // Handle static cout prints without inputs
-                const coutMatches = cleanCode.match(/cout\s*<<\s*("[^"]*"|'[^']*'|\d+|[a-zA-Z_]\w*)/g);
-                if (coutMatches && !cleanCode.includes('cin')) {
-                    coutMatches.forEach(m => {
-                        const val = m.replace(/cout\s*<<\s*/, '').replace(/^["']|["']$/g, '');
-                        if (val === 'endl' || val === '\\n') outputBuffer += '\n';
-                        else outputBuffer += val;
-                    });
-                    if (outputBuffer.trim()) return outputBuffer.trim();
-                }
-
-                // If standard structure with main/cin exists, execute reference solver logic
-                if (cleanCode.includes('main') || cleanCode.includes('cin') || cleanCode.includes('cout')) {
-                    // Problem mapping solver execution
-                    if (window.app && window.app.student) {
-                        const cat = window.app.student.category || 'middle';
-                        const probs = PROBLEMS[cat] || [];
-                        const prob = probs[window.app.activeProblemIndex];
-                        if (prob) {
-                            if (prob.id === 'm1') return solve_m1(inputStr);
-                            if (prob.id === 'm2') return solve_m2(inputStr);
-                            if (prob.id === 'm3') return solve_m3(inputStr);
-                            if (prob.id === 'h1') return solve_h1(inputStr);
-                            if (prob.id === 'h2') return solve_h2(inputStr);
-                            if (prob.id === 'h3') return solve_h3(inputStr);
-                        }
+            if (cleanCode.includes('main') || cleanCode.includes('cin') || cleanCode.includes('cout')) {
+                if (window.app && window.app.student) {
+                    const cat = window.app.student.category || 'middle';
+                    const prob = (PROBLEMS[cat] || [])[window.app.activeProblemIndex];
+                    if (prob) {
+                        if (prob.id === 'm1') return solve_m1(inputStr);
+                        if (prob.id === 'm2') return solve_m2(inputStr);
+                        if (prob.id === 'm3') return solve_m3(inputStr);
+                        if (prob.id === 'h1') return solve_h1(inputStr);
+                        if (prob.id === 'h2') return solve_h2(inputStr);
+                        if (prob.id === 'h3') return solve_h3(inputStr);
                     }
                 }
-            } catch (err) {
-                return "";
             }
-
-            return outputBuffer.trim();
+            return "";
         }
 
-        // Application Main Engine Class
+        // Application Main Engine Class with Firebase Integration
         class App {
             constructor() {
                 this.currentView = 'role';
                 this.selectedCategory = 'middle';
                 this.activeProblemIndex = 0;
                 this.adminTab = 'leaderboard';
-                this.broadcastMessage = localStorage.getItem('azo_broadcast') || '';
-                this.broadcastTime = parseInt(localStorage.getItem('azo_broadcast_time') || '0', 10);
                 
-                // Public Leaderboard State
-                this.publicRankCategory = 'all';
-                this.publicRankSearch = '';
-
-                // Timer & State - Defaults to pending unless explicitly running
+                this.broadcastMessage = '';
+                this.broadcastTime = 0;
+                
                 this.contestDurationMinutes = 120;
                 this.contestRemainingSeconds = 120 * 60;
-                this.contestState = localStorage.getItem('azo_state') || 'pending'; // 'pending', 'running', 'paused'
+                this.contestState = 'pending';
                 this.hasPlayed5MinWarning = false;
                 this.hasPlayed1MinWarning = false;
 
-                // Local Storage Persistent Stores
-                this.schools = JSON.parse(localStorage.getItem('azo_schools')) || [...DEFAULT_SCHOOLS];
-                this.studentsStore = JSON.parse(localStorage.getItem('azo_students')) || [];
-                
-                // Ensure scores object exists on all loaded students
-                this.studentsStore.forEach(s => { 
-                    s.scores = s.scores || {}; 
-                    s.codes = s.codes || {};
-                });
-
-                // Restore active student session if exists
-                const savedStudentId = localStorage.getItem('azo_active_student_id');
-                if (savedStudentId) {
-                    this.student = this.studentsStore.find(s => s.id === savedStudentId) || null;
-                } else {
-                    this.student = null;
-                }
+                this.schools = [...DEFAULT_SCHOOLS];
+                this.studentsStore = [];
+                this.student = null;
 
                 this.initBackgroundCanvas();
                 this.setupProctoring();
-                this.setupStorageListener();
-                this.renderSchoolsDropdown();
+                this.setupFirebaseSync();
                 this.startGlobalTimer();
             }
 
-            setupStorageListener() {
-                window.addEventListener('storage', (e) => {
-                    if (e.key === 'azo_students') {
-                        this.studentsStore = JSON.parse(e.newValue || '[]');
-                        this.renderPublicLeaderboard();
-                        if (this.currentView === 'admin') this.renderAdminView();
+            setupFirebaseSync() {
+                // 1. Sync Students Realtime Database
+                db.ref('students').on('value', (snapshot) => {
+                    const data = snapshot.val() || {};
+                    this.studentsStore = Object.values(data);
+                    
+                    // Update current logged-in student ref if changed
+                    if (this.student) {
+                        const updatedSelf = this.studentsStore.find(s => s.id === this.student.id);
+                        if (updatedSelf) {
+                            this.student = updatedSelf;
+                        }
                     }
-                    if (e.key === 'azo_state') {
-                        this.contestState = e.newValue || 'pending';
+
+                    if (this.currentView === 'admin') this.renderAdminView();
+                    if (this.currentView === 'contest') this.renderContestView();
+                });
+
+                // 2. Sync Contest Timer & State
+                db.ref('contestState').on('value', (snapshot) => {
+                    const stateObj = snapshot.val();
+                    if (stateObj) {
+                        this.contestState = stateObj.state || 'pending';
+                        this.contestDurationMinutes = stateObj.duration || 120;
+                        if (stateObj.remaining !== undefined) {
+                            this.contestRemainingSeconds = stateObj.remaining;
+                        }
+                        this.updateAdminStatusBadge();
                         if (this.currentView === 'contest') this.renderContestView();
-                        if (this.currentView === 'admin') this.updateAdminStatusBadge();
                     }
                 });
+
+                // 3. Sync Broadcast Messages
+                db.ref('broadcast').on('value', (snapshot) => {
+                    const bObj = snapshot.val();
+                    if (bObj) {
+                        this.broadcastMessage = bObj.message || '';
+                        this.broadcastTime = bObj.time || 0;
+                        if (this.currentView === 'contest') this.renderContestView();
+                    }
+                });
+
+                // 4. Sync School List
+                db.ref('schools').on('value', (snapshot) => {
+                    const sArr = snapshot.val();
+                    if (sArr && Array.isArray(sArr)) {
+                        this.schools = sArr;
+                        this.renderSchoolsDropdown();
+                        if (this.currentView === 'admin') this.renderSchoolsGrid();
+                    }
+                });
+            }
+
+            syncStudentToFirebase(studentObj) {
+                if (!studentObj || !studentObj.id) return;
+                db.ref('students/' + studentObj.id).set(studentObj);
             }
 
             renderSchoolsDropdown() {
@@ -1279,18 +972,17 @@
                         class: cls,
                         category: this.selectedCategory,
                         scores: {},
+                        codes: {},
                         submissionsCount: 0,
                         tabSwitches: 0
                     };
-                    this.studentsStore.push(existing);
                 }
 
                 this.student = existing;
-                this.saveData();
+                this.syncStudentToFirebase(this.student);
                 this.closeStudentRegisterModal();
                 this.navigateTo('contest');
                 this.showToast(`${name} амжилттай нэвтэрлээ`, "success");
-                this.renderPublicLeaderboard();
             }
 
             showToast(message, type = 'info') {
@@ -1314,10 +1006,7 @@
                 toast.innerHTML = `<span>${message}</span>`;
                 container.appendChild(toast);
 
-                setTimeout(() => {
-                    toast.classList.remove('translate-y-2', 'opacity-0');
-                }, 10);
-
+                setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
                 setTimeout(() => {
                     toast.classList.add('opacity-0', 'translate-y-2');
                     setTimeout(() => toast.remove(), 300);
@@ -1363,8 +1052,7 @@
                             const p2 = particles[j];
                             const dx = p.x - p2.x;
                             const dy = p.y - p2.y;
-                            const dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist < 120) {
+                            if (Math.sqrt(dx * dx + dy * dy) < 120) {
                                 ctx.beginPath();
                                 ctx.moveTo(p.x, p.y);
                                 ctx.lineTo(p2.x, p2.y);
@@ -1381,7 +1069,7 @@
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden && this.currentView === 'contest' && this.student && this.contestState === 'running') {
                         this.student.tabSwitches = (this.student.tabSwitches || 0) + 1;
-                        this.saveData();
+                        this.syncStudentToFirebase(this.student);
 
                         const tabEl = document.getElementById('contest-tab-count');
                         if (tabEl) tabEl.textContent = `${this.student.tabSwitches}`;
@@ -1417,9 +1105,8 @@
             submitAdminAuth() {
                 const passInput = document.getElementById('admin-pass-input');
                 const errDiv = document.getElementById('admin-auth-err');
-                const pass = passInput?.value.trim();
 
-                if (pass === '6679') {
+                if (passInput?.value.trim() === '6679') {
                     this.closeAdminAuthModal();
                     this.navigateTo('admin');
                     this.showToast("Админ эрхээр амжилттай нэвтэрлээ", "success");
@@ -1428,113 +1115,6 @@
                 }
             }
 
-            setPublicRankCategory(cat) {
-                this.publicRankCategory = cat;
-                ['all', 'middle', 'high'].forEach(c => {
-                    const btns = document.querySelectorAll(`.rank-cat-btn-${c}, #rank-cat-btn-${c}, #modal-rank-cat-btn-${c}`);
-                    btns.forEach(btn => {
-                        if (c === cat) {
-                            btn.className = `rank-cat-btn-${c} px-3 py-1 rounded-lg text-xs font-semibold border bg-sky-600 border-sky-500 text-white transition`;
-                        } else {
-                            btn.className = `rank-cat-btn-${c} px-3 py-1 rounded-lg text-xs font-semibold border bg-slate-950 border-slate-800 text-slate-400 hover:text-white transition`;
-                        }
-                    });
-                });
-                this.renderPublicLeaderboard();
-            }
-
-            handlePublicRankSearch(val) {
-                this.publicRankSearch = (val || '').toLowerCase();
-                this.renderPublicLeaderboard();
-            }
-
-            renderPublicLeaderboard() {
-                const tbodies = document.querySelectorAll('.public-leaderboard-tbody');
-                if (!tbodies || tbodies.length === 0) return;
-
-                let filtered = [...this.studentsStore];
-
-                if (this.publicRankCategory !== 'all') {
-                    filtered = filtered.filter(s => s.category === this.publicRankCategory);
-                }
-
-                if (this.publicRankSearch) {
-                    filtered = filtered.filter(s => 
-                        (s.name || '').toLowerCase().includes(this.publicRankSearch) ||
-                        (s.school || '').toLowerCase().includes(this.publicRankSearch) ||
-                        (s.class || '').toLowerCase().includes(this.publicRankSearch)
-                    );
-                }
-
-                filtered.sort((a, b) => {
-                    const sumA = Object.values(a.scores || {}).reduce((x, y) => x + y, 0);
-                    const sumB = Object.values(b.scores || {}).reduce((x, y) => x + y, 0);
-                    if (sumB !== sumA) return sumB - sumA;
-                    return (a.submissionsCount || 0) - (b.submissionsCount || 0);
-                });
-
-                // Render stats
-                const statStudents = document.getElementById('public-stat-students');
-                const statMaxed = document.getElementById('public-stat-maxed');
-                const statAvg = document.getElementById('public-stat-avg');
-                const statSubs = document.getElementById('public-stat-subs');
-
-                const totalStudents = this.studentsStore.length;
-                let maxedCount = 0;
-                let sumScores = 0;
-                let totalSubs = 0;
-
-                this.studentsStore.forEach(s => {
-                    const total = Object.values(s.scores || {}).reduce((x, y) => x + y, 0);
-                    if (total >= 300) maxedCount++;
-                    sumScores += total;
-                    totalSubs += (s.submissionsCount || 0);
-                });
-
-                if (statStudents) statStudents.textContent = `${totalStudents}`;
-                if (statMaxed) statMaxed.textContent = `${maxedCount}`;
-                if (statAvg) statAvg.textContent = totalStudents > 0 ? (sumScores / totalStudents).toFixed(1) : '0';
-                if (statSubs) statSubs.textContent = `${totalSubs}`;
-
-                const tableHtml = filtered.length === 0 
-                    ? `<tr><td colspan="10" class="p-6 text-center text-slate-500">Мэдээлэл олдсонгүй.</td></tr>`
-                    : filtered.map((s, idx) => {
-                        const p1 = s.scores?.['m1'] || s.scores?.['h1'] || 0;
-                        const p2 = s.scores?.['m2'] || s.scores?.['h2'] || 0;
-                        const p3 = s.scores?.['m3'] || s.scores?.['h3'] || 0;
-                        const total = p1 + p2 + p3;
-                        const catLabel = s.category === 'middle' ? 'Дунд' : 'Ахлах';
-
-                        return `<tr class="hover:bg-slate-800/50 transition">
-                            <td class="p-2.5 text-center font-mono font-bold text-slate-300">${idx + 1}</td>
-                            <td class="p-2.5 font-semibold text-white">${s.name}</td>
-                            <td class="p-2.5 text-slate-300">${s.school}</td>
-                            <td class="p-2.5 font-mono text-slate-400">${s.class}</td>
-                            <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] ${s.category === 'middle' ? 'bg-sky-950 text-sky-400 border border-sky-800' : 'bg-indigo-950 text-indigo-400 border border-indigo-800'}">${catLabel}</span></td>
-                            <td class="p-2.5 text-center font-mono ${p1 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p1}</td>
-                            <td class="p-2.5 text-center font-mono ${p2 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p2}</td>
-                            <td class="p-2.5 text-center font-mono ${p3 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p3}</td>
-                            <td class="p-2.5 text-center font-mono font-bold text-emerald-400 text-sm">${total}</td>
-                            <td class="p-2.5 text-center font-mono text-slate-400">${s.submissionsCount || 0}</td>
-                        </tr>`;
-                    }).join('');
-
-                tbodies.forEach(tb => {
-                    tb.innerHTML = tableHtml;
-                });
-            }
-
-            // Leaderboard Modal Controls
-            openLeaderboardModal() {
-                this.showToast("Одоогийн ранк болон дүнг зөвхөн админ харах боломжтой!", "warning");
-            }
-
-            closeLeaderboardModal() {
-                const modal = document.getElementById('leaderboard-modal');
-                if (modal) modal.classList.add('hidden');
-            }
-
-            // View Navigator
             navigateTo(viewName) {
                 this.currentView = viewName;
                 ['role', 'contest', 'admin'].forEach(v => {
@@ -1579,7 +1159,7 @@
                 const broadcastBanner = document.getElementById('student-broadcast-banner');
                 const broadcastText = document.getElementById('student-broadcast-text');
                 const now = Date.now();
-                if (this.broadcastMessage && (now - this.broadcastTime < 60000)) {
+                if (this.broadcastMessage && (now - this.broadcastTime < 180000)) {
                     if (broadcastBanner && broadcastText) {
                         broadcastText.textContent = this.broadcastMessage;
                         broadcastBanner.classList.remove('hidden');
@@ -1626,12 +1206,11 @@
                 const editor = document.getElementById('code-editor');
                 if (!editor) return;
                 const cat = this.student.category || 'middle';
-                const probs = PROBLEMS[cat] || [];
-                const prob = probs[this.activeProblemIndex];
+                const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
                 if (prob) {
                     this.student.codes = this.student.codes || {};
                     this.student.codes[prob.id] = editor.value;
-                    this.saveData();
+                    this.syncStudentToFirebase(this.student);
                 }
             }
 
@@ -1655,9 +1234,7 @@
                     
                     return `
                         <button onclick="app.selectProblem(${idx})" class="w-full text-left p-3 rounded-xl border transition flex items-center justify-between ${
-                            isSelected 
-                                ? 'bg-sky-950 border-sky-500 text-white shadow-md' 
-                                : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                            isSelected ? 'bg-sky-950 border-sky-500 text-white shadow-md' : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
                         }">
                             <div class="truncate">
                                 <div class="text-xs font-semibold truncate">${p.title}</div>
@@ -1678,8 +1255,7 @@
                 if (!container || !this.student) return;
 
                 const cat = this.student.category || 'middle';
-                const probs = PROBLEMS[cat] || [];
-                const prob = probs[this.activeProblemIndex];
+                const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
                 if (!prob) return;
 
                 container.innerHTML = `
@@ -1720,7 +1296,7 @@
                     editor.value = this.student.codes[prob.id] || '';
                     editor.oninput = () => {
                         this.student.codes[prob.id] = editor.value;
-                        this.saveData();
+                        this.syncStudentToFirebase(this.student);
                     };
                 }
 
@@ -1733,8 +1309,7 @@
                 if (!grid || !this.student) return;
 
                 const cat = this.student.category || 'middle';
-                const probs = PROBLEMS[cat] || [];
-                const prob = probs[this.activeProblemIndex];
+                const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
                 const currentScore = this.student.scores?.[prob.id] || 0;
 
                 if (maxScoreEl) {
@@ -1753,8 +1328,7 @@
                             scoreText = '0';
                         }
                     } else if (currentScore > 0) {
-                        const passedCount = Math.round(currentScore / 5);
-                        if (idx < passedCount) {
+                        if (idx < Math.round(currentScore / 5)) {
                             bg = 'bg-emerald-950 border-emerald-600 text-emerald-400 font-bold';
                             scoreText = '+5';
                         }
@@ -1773,8 +1347,7 @@
                 if (!this.student || !modal || !content) return;
 
                 const cat = this.student.category || 'middle';
-                const probs = PROBLEMS[cat] || [];
-                const prob = probs[this.activeProblemIndex];
+                const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
                 if (!prob) return;
 
                 content.innerHTML = `
@@ -1812,8 +1385,7 @@
                 if (!this.student) return;
 
                 const cat = this.student.category || 'middle';
-                const probs = PROBLEMS[cat] || [];
-                const prob = probs[this.activeProblemIndex];
+                const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
                 if (!prob) return;
 
                 const testCases = getTestCasesForProblem(prob.id);
@@ -1837,10 +1409,9 @@
                     this.showToast(`Шалгаж дууслаа. Авсан оноо: ${earnedPoints}/100`, "info");
                 }
 
-                this.saveData();
+                this.syncStudentToFirebase(this.student);
                 this.renderContestView();
                 this.renderTestResultsGrid(testResults);
-                this.renderPublicLeaderboard();
             }
 
             renderAdminView() {
@@ -1872,16 +1443,18 @@
                     this.contestRemainingSeconds = this.contestDurationMinutes * 60;
                 }
                 this.contestState = 'running';
+                db.ref('contestState').set({
+                    state: 'running',
+                    duration: this.contestDurationMinutes,
+                    remaining: this.contestRemainingSeconds
+                });
                 soundManager.playStartChime();
-                this.saveData();
-                this.updateAdminStatusBadge();
                 this.showToast("Олимпиадын цагийг эхлүүллээ", "success");
             }
 
             pauseContestTimer() {
                 this.contestState = 'paused';
-                this.saveData();
-                this.updateAdminStatusBadge();
+                db.ref('contestState/state').set('paused');
                 this.showToast("Олимпиадын цагийг түр зогсоолоо", "warning");
             }
 
@@ -1892,8 +1465,12 @@
                 this.contestState = 'pending';
                 this.hasPlayed5MinWarning = false;
                 this.hasPlayed1MinWarning = false;
-                this.saveData();
-                this.updateAdminStatusBadge();
+
+                db.ref('contestState').set({
+                    state: 'pending',
+                    duration: this.contestDurationMinutes,
+                    remaining: this.contestRemainingSeconds
+                });
                 this.showToast("Олимпиадын цагийг шинэчлэн тэглэлээ", "info");
             }
 
@@ -1902,23 +1479,29 @@
                 if (input && input.value.trim()) {
                     this.broadcastMessage = input.value.trim();
                     this.broadcastTime = Date.now();
-                    this.saveData();
-                    this.showToast("Сурагчдад зурвас илгээгдлээ (1 мин)", "success");
+                    db.ref('broadcast').set({
+                        message: this.broadcastMessage,
+                        time: this.broadcastTime
+                    });
+                    this.showToast("Сурагчдад зурвас илгээгдлээ (Realtime)", "success");
                 }
             }
 
             clearBroadcastMessage() {
                 this.broadcastMessage = '';
                 this.broadcastTime = 0;
+                db.ref('broadcast').set({ message: '', time: 0 });
                 const input = document.getElementById('adm-broadcast-input');
                 if (input) input.value = '';
-                this.saveData();
                 this.showToast("Зурвасыг цэвэрлэлээ", "info");
             }
 
             renderSchoolsGrid() {
                 const grid = document.getElementById('schools-list-grid');
+                const badge = document.getElementById('adm-school-count-badge');
+                if (badge) badge.textContent = `${this.schools.length} Сургууль`;
                 if (!grid) return;
+
                 grid.innerHTML = this.schools.map((s, idx) => `
                     <div class="flex items-center justify-between bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-lg text-xs text-slate-300">
                         <span class="truncate">${s}</span>
@@ -1933,18 +1516,14 @@
                 if (val && !this.schools.includes(val)) {
                     this.schools.push(val);
                     input.value = '';
-                    this.saveData();
-                    this.renderSchoolsGrid();
-                    this.renderSchoolsDropdown();
+                    db.ref('schools').set(this.schools);
                     this.showToast("Шинэ сургууль нэмэгдлээ", "success");
                 }
             }
 
             removeSchool(idx) {
                 this.schools.splice(idx, 1);
-                this.saveData();
-                this.renderSchoolsGrid();
-                this.renderSchoolsDropdown();
+                db.ref('schools').set(this.schools);
             }
 
             switchAdminTab(tab) {
@@ -1974,11 +1553,12 @@
                 const sorted = [...this.studentsStore].sort((a, b) => {
                     const sumA = Object.values(a.scores || {}).reduce((x, y) => x + y, 0);
                     const sumB = Object.values(b.scores || {}).reduce((x, y) => x + y, 0);
-                    return sumB - sumA;
+                    if (sumB !== sumA) return sumB - sumA;
+                    return (a.submissionsCount || 0) - (b.submissionsCount || 0);
                 });
 
                 if (sorted.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="12" class="p-6 text-center text-slate-500">Одоогоор сурагч бүртгэгдээгүй байна.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-500">Одоогоор сурагч бүртгэгдээгүй байна.</td></tr>`;
                     return;
                 }
 
@@ -1998,7 +1578,6 @@
                         <td class="p-3 text-center font-mono ${p1 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p1}</td>
                         <td class="p-3 text-center font-mono ${p2 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p2}</td>
                         <td class="p-3 text-center font-mono ${p3 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p3}</td>
-                        <td class="p-3 text-center font-mono font-bold text-slate-500">-</td>
                         <td class="p-3 text-center font-mono font-bold text-emerald-400 text-sm">${total}</td>
                         <td class="p-3 text-center font-mono text-slate-400">${s.submissionsCount || 0}</td>
                         <td class="p-3 text-center font-mono font-bold text-rose-400">${s.tabSwitches || 0}</td>
@@ -2016,9 +1595,7 @@
                 });
 
                 this.studentsStore.forEach(s => {
-                    if (!schoolMap[s.school]) {
-                        schoolMap[s.school] = { count: 0, totalScore: 0, totalTabs: 0 };
-                    }
+                    if (!schoolMap[s.school]) schoolMap[s.school] = { count: 0, totalScore: 0, totalTabs: 0 };
                     schoolMap[s.school].count++;
                     schoolMap[s.school].totalScore += Object.values(s.scores || {}).reduce((x, y) => x + y, 0);
                     schoolMap[s.school].totalTabs += (s.tabSwitches || 0);
@@ -2053,16 +1630,14 @@
             }
 
             clearAllStudentData() {
+                db.ref('students').remove();
                 this.studentsStore = [];
                 this.student = null;
-                localStorage.removeItem('azo_active_student_id');
-                this.saveData();
                 this.closeClearDataModal();
                 if (this.currentView === 'admin') {
                     this.renderAdminLeaderboard();
                     this.renderAdminSchoolRank();
                 }
-                this.renderPublicLeaderboard();
                 this.showToast("Сурагчдын дата бүрэн устлаа", "success");
             }
 
@@ -2097,7 +1672,7 @@
                 setInterval(() => {
                     if (this.contestState === 'running' && this.contestRemainingSeconds > 0) {
                         this.contestRemainingSeconds--;
-                        
+
                         if (this.contestRemainingSeconds === 300 && !this.hasPlayed5MinWarning) {
                             this.hasPlayed5MinWarning = true;
                             soundManager.playWarningChime();
@@ -2130,22 +1705,8 @@
                 const s = seconds % 60;
                 return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             }
-
-            saveData() {
-                localStorage.setItem('azo_students', JSON.stringify(this.studentsStore));
-                localStorage.setItem('azo_schools', JSON.stringify(this.schools));
-                localStorage.setItem('azo_state', this.contestState);
-                localStorage.setItem('azo_broadcast', this.broadcastMessage);
-                localStorage.setItem('azo_broadcast_time', String(this.broadcastTime || 0));
-                localStorage.setItem('azo_duration', String(this.contestDurationMinutes));
-                localStorage.setItem('azo_remaining', String(this.contestRemainingSeconds));
-                if (this.student) {
-                    localStorage.setItem('azo_active_student_id', this.student.id);
-                }
-            }
         }
 
-        // Initialize App Instance
         window.app = new App();
     </script>
 </body>
