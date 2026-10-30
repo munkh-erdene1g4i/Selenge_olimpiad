@@ -262,11 +262,6 @@
                             <span id="contest-subs-count" class="text-sky-400 font-bold ml-1">0 / 50</span>
                         </div>
 
-                        <div class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 flex-1 md:flex-initial text-center">
-                            <span class="text-slate-400">Таб шилжсэн:</span>
-                            <span id="contest-tab-count" class="text-rose-400 font-bold ml-1">0</span>
-                        </div>
-
                         <div class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 flex-1 md:flex-initial text-center text-emerald-400">
                             <span class="text-slate-400">Үлдсэн цаг:</span>
                             <span id="contest-clock" class="font-bold ml-1">02:00:00</span>
@@ -511,25 +506,6 @@
                     Нэвтрэх
                 </button>
             </div>
-        </div>
-    </div>
-
-    <!-- MODAL 1: PROCTORING WARNING -->
-    <div id="proctor-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-rose-900/80 rounded-2xl p-6 max-w-md w-full shadow-2xl text-center space-y-4">
-            <div class="w-12 h-12 rounded-full bg-rose-950 border border-rose-800 flex items-center justify-center mx-auto text-rose-400 font-bold font-mono">
-                !
-            </div>
-            <h3 class="text-lg font-bold text-white">АНХААРУУЛГА: Таб эсвэл Цонх Шилжлээ!</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">
-                Олимпиадын үеэр өөр цонх, таб руу шилжих нь хориглогдоно. Таны шилжсэн тоо админы дэлгэц болон тайланд автоматаар хадгалагдлаа.
-            </p>
-            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-rose-400">
-                Таб шилжсэн нийт тоо: <span id="proctor-count-val">1</span>
-            </div>
-            <button onclick="app.closeProctorModal()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-medium rounded-lg text-xs transition">
-                Ойлголоо, Үргэлжлүүлэх
-            </button>
         </div>
     </div>
 
@@ -1038,27 +1014,14 @@
                 animate();
             }
 
+            // Silent Proctoring - No warnings or numbers shown to student, syncs directly to Firebase for Admin only
             setupProctoring() {
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden && this.currentView === 'contest' && this.student && this.contestState === 'running') {
                         this.student.tabSwitches = (this.student.tabSwitches || 0) + 1;
                         this.syncStudentToFirebase(this.student);
-
-                        const tabEl = document.getElementById('contest-tab-count');
-                        if (tabEl) tabEl.textContent = `${this.student.tabSwitches}`;
-
-                        const countVal = document.getElementById('proctor-count-val');
-                        if (countVal) countVal.textContent = `${this.student.tabSwitches}`;
-
-                        const modal = document.getElementById('proctor-modal');
-                        if (modal) modal.classList.remove('hidden');
                     }
                 });
-            }
-
-            closeProctorModal() {
-                const modal = document.getElementById('proctor-modal');
-                if (modal) modal.classList.add('hidden');
             }
 
             openAdminAuthModal() {
@@ -1157,9 +1120,6 @@
 
                     const subsEl = document.getElementById('contest-subs-count');
                     if (subsEl) subsEl.textContent = `${this.student.submissionsCount || 0} / 50`;
-
-                    const tabEl = document.getElementById('contest-tab-count');
-                    if (tabEl) tabEl.textContent = `${this.student.tabSwitches || 0}`;
                 }
 
                 if (this.contestState === 'running') {
@@ -1375,10 +1335,9 @@
                 this.student.submissionsCount = (this.student.submissionsCount || 0) + 1;
                 const prevScore = this.student.scores?.[prob.id] || 0;
                 
-                // Track time if score increased
                 if (earnedPoints > prevScore) {
                     this.student.scores[prob.id] = earnedPoints;
-                    this.student.lastSubmitTime = Date.now(); // Tie-breaker timestamp
+                    this.student.lastSubmitTime = Date.now();
                     soundManager.playScoreChime();
                     this.showToast(`Шинэ дээд оноо! +${earnedPoints - prevScore} оноо авлаа!`, "success");
                 } else {
@@ -1526,10 +1485,6 @@
                 const tbody = document.getElementById('admin-student-table');
                 if (!tbody) return;
 
-                // Tie-breaker Sorting Logic:
-                // 1. Total Score (descending)
-                // 2. Last Score-improving submit timestamp (ascending - earlier is better)
-                // 3. Total Submissions Count (ascending - fewer is better)
                 const sorted = [...this.studentsStore].sort((a, b) => {
                     const sumA = Object.values(a.scores || {}).reduce((x, y) => x + y, 0);
                     const sumB = Object.values(b.scores || {}).reduce((x, y) => x + y, 0);
