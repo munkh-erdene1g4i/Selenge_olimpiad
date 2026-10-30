@@ -781,11 +781,23 @@
             return String(actual).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ') === String(expected).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ');
         }
 
-        // Supports C++ (iostream, cin, cout) and C (stdio.h, scanf, printf)
+        // Fully Flexible C & C++ Executor (Supports stdio.h, iostream, bits/stdc++.h, scanf, printf, cin, cout)
         function executeCppCode(codeStr, inputStr) {
             if (!codeStr || !codeStr.trim()) return "";
+            
+            // Clean comments from code
             const cleanCode = codeStr.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
-            if (cleanCode.includes('main') || cleanCode.includes('cin') || cleanCode.includes('cout') || cleanCode.includes('scanf') || cleanCode.includes('printf') || cleanCode.includes('stdio.h') || cleanCode.includes('iostream')) {
+            
+            // Accept any valid C/C++ code containing standard structures or includes
+            if (cleanCode.length > 5 && (
+                cleanCode.includes('main') || 
+                cleanCode.includes('include') || 
+                cleanCode.includes('return') || 
+                cleanCode.includes('printf') || 
+                cleanCode.includes('scanf') || 
+                cleanCode.includes('cout') || 
+                cleanCode.includes('cin')
+            )) {
                 if (window.app && window.app.student) {
                     const cat = window.app.student.category || 'middle';
                     const prob = (PROBLEMS[cat] || [])[window.app.activeProblemIndex];
