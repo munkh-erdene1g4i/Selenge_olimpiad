@@ -41,7 +41,6 @@
         }
     </script>
     <style>
-        /* Modern Animated CSS Gradient Background */
         @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -121,21 +120,6 @@
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-50%, 0, 0); }
         }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .animated-modal {
-            animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative antialiased selection:bg-sky-500 selection:text-white">
@@ -194,7 +178,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-white mb-2">Дунд Анги</h3>
                         <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                            6-аас 10-р ангийн сурагчдын ангилал. Нийт 3 бодлого (2 хялбар, 1 дундаж).
+                            6-аас 10-р ангийн сурагчдын ангилал. Нийт 3 бодлого.
                         </p>
                         <div class="flex items-center text-xs text-sky-400 font-medium group-hover:underline">
                             Нэвтрэх &rarr;
@@ -208,7 +192,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-white mb-2">Ахлах Анги</h3>
                         <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                            11-ээс 12-р ангийн сурагчдын ангилал. Нийт 3 бодлого (2 хялбар, 1 дундаж).
+                            11-ээс 12-р ангийн сурагчдын ангилал. Нийт 3 бодлого.
                         </p>
                         <div class="flex items-center text-xs text-indigo-400 font-medium group-hover:underline">
                             Нэвтрэх &rarr;
@@ -222,7 +206,7 @@
                         </div>
                         <h3 class="text-lg font-semibold text-white mb-2">Системийн Админ</h3>
                         <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                            Зохион байгуулагчийн хэсэг. Цаг эхлүүлэх, сурагчдын бодит цагийн дүн харах ба Excel тайлан.
+                            Зохион байгуулагчийн хэсэг. Цаг эхлүүлэх, сурагчдын бодит цагийн дүн харах.
                         </p>
                         <div class="flex items-center text-xs text-emerald-400 font-medium group-hover:underline">
                             Нэвтрэх &rarr;
@@ -277,14 +261,8 @@
                         </span>
                         <h2 class="text-2xl font-bold text-white">Админ олимпиадын цагийг эхлүүлэхийг хүлээнэ үү</h2>
                         <p class="text-xs text-slate-400 max-w-xl mx-auto leading-relaxed">
-                            Олимпиад эхлэх хүртэл та доорх мэдээлэл зүйн онол, алгоритмууд болон хялбар жишээ бодлогуудыг уншин бэлтгэлээ хангана уу. Админ цаг эхлүүлсэн агшинд бодлогууд автоматаар харагдах болно.
+                            Олимпиад эхлэх хүртэл бэлтгэлээ хангана уу. Админ цаг эхлүүлсэн агшинд бодлогууд автоматаар харагдах болно.
                         </p>
-
-                        <div class="pt-4 border-t border-slate-800">
-                            <div class="ticker-wrap rounded-xl bg-slate-950 border border-slate-800 py-4">
-                                <div id="student-waiting-ticker" class="ticker-move slow space-x-6 px-4"></div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -333,11 +311,10 @@
 
             <!-- SECTION 4: ADMIN PORTAL -->
             <section id="view-admin" class="hidden flex-1 flex flex-col space-y-6">
-                <!-- Admin Header -->
                 <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur">
                     <div>
                         <span class="px-2.5 py-1 text-xs font-mono rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
-                            АДМИН УДИРДЛАГА (REALTIME SYNCHRONIZED)
+                            АДМИН УДИРДЛАГА
                         </span>
                         <h2 class="text-xl font-bold text-white mt-1">Олимпиадын Удирдлага & Аналитик</h2>
                     </div>
@@ -351,9 +328,7 @@
                     </div>
                 </div>
 
-                <!-- DIRECT TOP CONTROL PANELS: TIMER, SCHOOLS & BROADCAST MESSAGE -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- 1. Timer Control Panel -->
                     <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-4 backdrop-blur">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="font-bold text-white text-sm">Цаг ба Төлөвийн Удирдлага</h3>
@@ -378,18 +353,16 @@
                         </div>
                     </div>
 
-                    <!-- 2. Admin Broadcast Message Panel -->
                     <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3 backdrop-blur">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="font-bold text-white text-sm">Сурагчдад Зурвас Илгээх</h3>
-                            <span class="text-[10px] font-mono text-sky-400 bg-sky-950 border border-sky-800 px-2 py-0.5 rounded">Шууд харагдана</span>
                         </div>
                         <div>
-                            <input type="text" id="adm-broadcast-input" placeholder="Сурагчдад харагдах зурвас/зарлал бичнэ үү..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
+                            <input type="text" id="adm-broadcast-input" placeholder="Зарлал бичнэ үү..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-sky-500">
                         </div>
                         <div class="flex space-x-2 pt-1">
                             <button onclick="app.sendBroadcastMessage()" class="flex-1 py-2 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-lg text-xs shadow transition">
-                                Зурвас Илгээх
+                                Илгээх
                             </button>
                             <button onclick="app.clearBroadcastMessage()" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium rounded-lg text-xs transition">
                                 Цэвэрлэх
@@ -397,7 +370,6 @@
                         </div>
                     </div>
 
-                    <!-- 3. School Management Panel -->
                     <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3 backdrop-blur">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="font-bold text-white text-sm">Сургуулийн Жагсаалт</h3>
@@ -413,17 +385,15 @@
                     </div>
                 </div>
 
-                <!-- Admin Tabs for Rankings -->
                 <div class="flex border-b border-slate-800 space-x-4 pt-2">
                     <button onclick="app.switchAdminTab('leaderboard')" id="adm-tab-btn-leaderboard" class="pb-3 text-sm font-medium text-sky-400 border-b-2 border-sky-400">
-                        Сурагчдын Нэгдсэн Ранк (Оноо & Хугацаа)
+                        Сурагчдын Нэгдсэн Ранк
                     </button>
                     <button onclick="app.switchAdminTab('school')" id="adm-tab-btn-school" class="pb-3 text-sm font-medium text-slate-400 hover:text-white">
                         Сургуулиудын Нэгтгэсэн Дүн
                     </button>
                 </div>
 
-                <!-- ADMIN TAB 1: OVERALL LEADERBOARD -->
                 <div id="adm-content-leaderboard" class="space-y-4">
                     <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-x-auto backdrop-blur">
                         <table class="w-full text-left text-xs text-slate-300">
@@ -448,7 +418,6 @@
                     </div>
                 </div>
 
-                <!-- ADMIN TAB 2: SCHOOL RANKINGS -->
                 <div id="adm-content-school" class="hidden space-y-4">
                     <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-x-auto backdrop-blur">
                         <table class="w-full text-left text-xs text-slate-300">
@@ -470,14 +439,12 @@
 
         </main>
 
-        <!-- Footer -->
         <footer class="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur py-4 text-center text-xs text-slate-500 space-y-1">
             <div>Аймгийн Мэдээлэл Зүйн Олимпиад &copy; 2026. Бүх эрх хуулиар хамгаалагдсан.</div>
-            <div class="text-[10px] text-slate-600 font-mono tracking-tight">Мандал сумын 4р сургууль | Сэлэнгэ Аймаг</div>
         </footer>
     </div>
 
-    <!-- MODAL 0: STUDENT REGISTER / LOGIN MODAL -->
+    <!-- MODAL 0: STUDENT REGISTER -->
     <div id="student-register-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -490,7 +457,7 @@
                     <select id="reg-school-select" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500"></select>
                 </div>
                 <div>
-                    <label class="block font-medium text-slate-300 mb-1">Анги (Жишээ нь: 9А, 11Б)</label>
+                    <label class="block font-medium text-slate-300 mb-1">Анги</label>
                     <input type="text" id="reg-class-input" placeholder="Анги бичнэ үү" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:border-sky-500">
                 </div>
                 <div>
@@ -509,7 +476,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: ADMIN PASSWORD AUTH -->
+    <!-- MODAL 2: ADMIN AUTH -->
     <div id="admin-auth-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
             <h3 class="text-base font-bold text-white border-b border-slate-800 pb-3">Системийн Админ Нэвтрэх</h3>
@@ -531,7 +498,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: TEST DATA VIEW MODAL -->
+    <!-- MODAL 3: TEST DATA VIEW -->
     <div id="test-data-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -542,31 +509,23 @@
         </div>
     </div>
 
-    <!-- MODAL 4: CLEAR ALL STUDENT DATA CONFIRMATION MODAL -->
+    <!-- MODAL 4: CLEAR DATA -->
     <div id="clear-data-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-rose-900/80 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 text-center">
-            <div class="w-12 h-12 rounded-full bg-rose-950 border border-rose-800 flex items-center justify-center mx-auto text-rose-400 font-bold font-mono text-lg">
-                !
-            </div>
             <h3 class="text-lg font-bold text-white">Бүх сурагчдын датаг устгах уу?</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">
-                Энэ үйлдэл нь олимпиадад бүртгэгдсэн бүх сурагчдын оноо, илгээсэн бодолт болон таб шилжилтийн түүхийг Firebase ба санамжнаас бүрэн арилгана.
-            </p>
             <div class="flex space-x-3 pt-2">
                 <button onclick="app.closeClearDataModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-lg text-xs border border-slate-700 transition">
                     Цуцлах
                 </button>
                 <button onclick="app.clearAllStudentData()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-lg text-xs shadow transition">
-                    Тийм, Бүх датаг Арилгах
+                    Арилгах
                 </button>
             </div>
         </div>
     </div>
 
-
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // FIREBASE REALTIME DATABASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyABeedU858DJ8815aObeD9jQnwKz86j8Xc",
             authDomain: "selenge-691f9.firebaseapp.com",
@@ -581,70 +540,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Synthesized Audio Helper
-        class SoundEffects {
-            constructor() { this.ctx = null; }
-            init() {
-                if (!this.ctx) {
-                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContextClass) this.ctx = new AudioContextClass();
-                }
-            }
-            playStartChime() {
-                this.init();
-                if (!this.ctx) return;
-                const notes = [261.63, 329.63, 392.00, 523.25];
-                notes.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.12, this.ctx.currentTime + idx * 0.14);
-                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.14 + 0.35);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(this.ctx.currentTime + idx * 0.14);
-                    osc.stop(this.ctx.currentTime + idx * 0.14 + 0.35);
-                });
-            }
-            playWarningChime() {
-                this.init();
-                if (!this.ctx) return;
-                const notes = [440, 349.23, 440, 349.23];
-                notes.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.15, this.ctx.currentTime + idx * 0.18);
-                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.18 + 0.3);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(this.ctx.currentTime + idx * 0.18);
-                    osc.stop(this.ctx.currentTime + idx * 0.18 + 0.3);
-                });
-            }
-            playScoreChime() {
-                this.init();
-                if (!this.ctx) return;
-                const notes = [523.25, 659.25];
-                notes.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(0.05, this.ctx.currentTime + idx * 0.1);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + idx * 0.1 + 0.35);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(this.ctx.currentTime + idx * 0.1);
-                    osc.stop(this.ctx.currentTime + idx * 0.1 + 0.35);
-                });
-            }
-        }
-
-        const soundManager = new SoundEffects();
-
         const DEFAULT_SCHOOLS = [
             "1-р сургууль", "2-р сургууль", "3-р сургууль", "4-р сургууль", "5-р сургууль",
             "6-р сургууль", "7-р сургууль", "8-р сургууль", "9-р сургууль", "10-р сургууль",
@@ -653,20 +548,7 @@
             "Орхон сургууль", "Алтанбулаг сургууль"
         ];
 
-        const THEORY_ITEMS = [
-            { title: "Давхардалгүй санаж бодох арга", desc: "Дэд бодлогуудын шийдлийг дахин дахин бодохгүйгээр санан ашиглах алгоритмын арга." },
-            { title: "Жишээ Бодлого: Фибоначчийн цуваа", desc: "Дарааллын дараагийн гишүүнийг өмнөх хоёр гишүүний нийлбэрээр бодож олох." },
-            { title: "Хоёртын хайлтын алгоритм", desc: "Эрэмбэлэгдсэн дараалалд хайлтыг алхам бүрд хоёр дахин багасгаж хурдан олох арга." },
-            { title: "Жишээ Бодлого: Квадрат язгуур олох", desc: "Тооны квадрат язгуурыг хоёртын хайлтаар тодорхой нарийвчлалтай олох." },
-            { title: "Хамгийн богино зам олох алгоритм", desc: "Граф дээр эхний оройгоос бусад бүх орой хүртэлх хамгийн бага зардлыг олох." },
-            { title: "Анхны тоо олох арга", desc: "Өгөгдсөн тоо хүртэлх бүх анхны тоонуудыг давхардуулахгүй хурдан олох арга." },
-            { title: "Жишээ Бодлого: Анхны тоо шалгах", desc: "Өгөгдсөн тоо зөвхөн 1 болон өөртөө хуваагддаг эсэхийг шалгах." },
-            { title: "Алгоритмын хурд болон хугацаа", desc: "Бодлогын өгөгдлийн хэмжээнээс хамаарч алгоритм тодорхой хугацаанд багтан ажиллах." },
-            { title: "Завсрын нийлбэр шууд олох", desc: "Дарааллын тодорхой хэсгийн нийлбэрийг шууд тооцоолон олох хялбар арга." },
-            { title: "Дарааллын урьдчилсан нийлбэр", desc: "Өмнөх элементүүдийн нийлбэрийг бэлдсэнээр завсрын нийлбэрийг хоромхон зуурт олох арга." }
-        ];
-
-        // Reference Solvers
+        // Reference Solvers for test generation
         function solve_m1(inputStr) {
             const tokens = inputStr.trim().split(/\s+/).map(Number);
             if (tokens.length < 2) return "";
@@ -766,13 +648,13 @@
         const PROBLEMS = {
             middle: [
                 { id: 'm1', title: 'Бодлого 1: Малчны өвөлжөөний хашааны талбай', diff: 'Хялбар', points: 100, story: 'Малчны өвөлжөөний тэгш өнцөгт хэлбэртэй хашааны урт A ба өндөр H өгөгдөнө. Хашааны нийт талбай ба хүрээний уртыг (периметр) олно уу.', inputFmt: 'Нэг мөрөнд хашааны урт A ба өндөр H (бүхэл тоонууд).', outputFmt: 'Эхний мөрөнд талбай. Хоёрдугаар мөрөнд хүрээний урт.', constraints: '1 ≤ A, H ≤ 1000', sampleIn: '10 5', sampleOut: '50\n30' },
-                { id: 'm2', title: 'Бодлого 2: Нууц кодын цифрүүдийн шинж чанар', diff: 'Хялбар', points: 100, story: 'Сургуулийн мэдээллийн системд сурагч бүрт давтагдашгүй нууц код олгодог бөгөөд уг код нь зөвхөн 0-9 хүртэлх цифрүүдээс бүрдсэн тэмдэгт мөр байдаг.\n\nТанд өгөгдсөн нууц кодын цифрүүдийн нийлбэр болон тэгш цифрийн тоог тодорхойлж хэвлэх программ бичнэ үү.', inputFmt: 'Нэг мөрөнд зөвхөн цифрүүдээс бүрдэх, хоосон биш S тэмдэгт мөр өгөгдөнө.', outputFmt: 'Эхний тоо нь цифрүүдийн нийлбэр, хоёр дахь тоо нь тэгш цифрийн тоо байна.', constraints: '1 ≤ |S| ≤ 1000, S нь зөвхөн 0-9 цифрээс бүрдэнэ.', sampleIn: '123456', sampleOut: '21 3' },
-                { id: 'm3', title: 'Бодлого 3: Дарааллын хамгийн их дэд хэсгийн нийлбэр', diff: 'Дундаж', points: 100, story: 'Сэлэнгэ аймгийн цаг уурын ажиглалтын N хоногийн агаарын температурын өөрчлөлтүүд (сөрөг ба эерэг бүхэл тоонууд) өгөгдөнө. Дараалсан хэд хэдэн хоногийн температурын өөрчлөлтийн хамгийн их нийлбэрийг олно уу.', inputFmt: 'Эхний мөрөнд N. Хоёр дахь мөрөнд N ширхэг бүхэл тоо.', outputFmt: 'Дараалсан дэд хэсгийн хамгийн их нийлбэр.', constraints: '1 ≤ N ≤ 10<sup>5</sup>, -1000 ≤ A<sub>i</sub> ≤ 1000', sampleIn: '5\n-2 1 3 -1 2', sampleOut: '5' }
+                { id: 'm2', title: 'Бодлого 2: Нууц кодын цифрүүдийн шинж чанар', diff: 'Хялбар', points: 100, story: 'Танд өгөгдсөн нууц кодын цифрүүдийн нийлбэр болон тэгш цифрийн тоог тодорхойлж хэвлэх программ бичнэ үү.', inputFmt: 'Нэг мөрөнд зөвхөн цифрүүдээс бүрдэх S тэмдэгт мөр.', outputFmt: 'Цифрүүдийн нийлбэр ба тэгш цифрийн тоо.', constraints: '1 ≤ |S| ≤ 1000', sampleIn: '123456', sampleOut: '21 3' },
+                { id: 'm3', title: 'Бодлого 3: Дарааллын хамгийн их дэд хэсгийн нийлбэр', diff: 'Дундаж', points: 100, story: 'N хоногийн агаарын температурын өөрчлөлтүүд өгөгдөнө. Дараалсан хэд хэдэн хоногийн температурын өөрчлөлтийн хамгийн их нийлбэрийг олно уу.', inputFmt: 'Эхний мөрөнд N. Хоёр дахь мөрөнд N ширхэг бүхэл тоо.', outputFmt: 'Дараалсан дэд хэсгийн хамгийн их нийлбэр.', constraints: '1 ≤ N ≤ 100000', sampleIn: '5\n-2 1 3 -1 2', sampleOut: '5' }
             ],
             high: [
-                { id: 'h1', title: 'Бодлого 1: Сумдын ургацын мэдээлэл', diff: 'Хялбар', points: 100, story: 'Сэлэнгэ аймгийн Хөдөө Аж Ахуйн Газраас энэ жилийн хураан авсан буудайн ургацын мэдээллийг нэгтгэж байна. N сумын хураан авсан нийт ургацын хэмжээ болон хамгийн их ургацтай сумын дугаарыг олно уу.', inputFmt: 'Эхний мөрөнд N. Хоёрдугаар мөрөнд N ширхэг бүхэл тоо.', outputFmt: 'Эхний мөрөнд нийт ургац. Хоёрдугаар мөрөнд хамгийн их ургацтай сумын дугаар.', constraints: '1 ≤ N ≤ 1000, 0 ≤ A<sub>i</sub> ≤ 10<sup>5</sup>', sampleIn: '5\n80 120 150 90 200', sampleOut: '640\n5' },
-                { id: 'h2', title: 'Бодлого 2: Аймгийн цахилгаан шугамын засварын урт', diff: 'Хүндэвтэр', points: 100, story: 'N ширхэг шугамын засварын завсар [L<sub>i</sub>, R<sub>i</sub>] өгөгдөнө. Давхардсан засварын хэсгүүдийг нэгтгэсний дараа нийт засагдаж буй шугамын замын уртыг олно уу.', inputFmt: 'Эхний мөрөнд N. Дараагийн N мөр бүрт L<sub>i</sub>, R<sub>i</sub>.', outputFmt: 'Нийт засагдаж буй шугамын урт.', constraints: '1 ≤ N ≤ 1000, 0 ≤ L<sub>i</sub> ≤ R<sub>i</sub> ≤ 10<sup>5</sup>', sampleIn: '3\n1 5\n3 8\n10 12', sampleOut: '9' },
-                { id: 'h3', title: 'Бодлого 3: Тэмдэгт мөрийн шахалт', diff: 'Ахисан', points: 100, story: 'Дараалсан ижил тэмдэгтүүдийг тус бүрээр нь бичихийн оронд тухайн тэмдэгтийг нэг удаа бичиж, ард нь хэдэн удаа давтагдсаныг илэрхийлэх тоог залгаж бичнэ.\n\nӨгөгдсөн S тэмдэгт мөрийг шахаж хэвлэнэ үү.', inputFmt: 'Нэг мөрөнд англи том үсгүүдээс бүрдэх S тэмдэгт мөр өгөгдөнө.', outputFmt: 'Шахалтын үр дүнд үүссэн тэмдэгт мөр.', constraints: '1 ≤ |S| ≤ 100000, S нь зөвхөн A-Z тэмдэгтээс бүрдэнэ.', sampleIn: 'AAABBCCCCDD', sampleOut: 'A3B2C4D2' }
+                { id: 'h1', title: 'Бодлого 1: Сумдын ургацын мэдээлэл', diff: 'Хялбар', points: 100, story: 'N сумын хураан авсан нийт ургацын хэмжээ болон хамгийн их ургацтай сумын дугаарыг олно уу.', inputFmt: 'Эхний мөрөнд N. Хоёрдугаар мөрөнд N ширхэг бүхэл тоо.', outputFmt: 'Нийт ургац ба хамгийн их ургацтай сумын дугаар.', constraints: '1 ≤ N ≤ 1000', sampleIn: '5\n80 120 150 90 200', sampleOut: '640\n5' },
+                { id: 'h2', title: 'Бодлого 2: Аймгийн цахилгаан шугамын засварын урт', diff: 'Хүндэвтэр', points: 100, story: 'N ширхэг шугамын засварын завсар [L, R] өгөгдөнө. Давхардсан засварын хэсгүүдийг нэгтгэсний дараа нийт засагдаж буй шугамын уртыг олно уу.', inputFmt: 'Эхний мөрөнд N. Дараагийн N мөр бүрт L, R.', outputFmt: 'Нийт засагдаж буй шугамын урт.', constraints: '1 ≤ N ≤ 1000', sampleIn: '3\n1 5\n3 8\n10 12', sampleOut: '9' },
+                { id: 'h3', title: 'Бодлого 3: Тэмдэгт мөрийн шахалт', diff: 'Ахисан', points: 100, story: 'Өгөгдсөн S тэмдэгт мөрийг шахаж хэвлэнэ үү.', inputFmt: 'Нэг мөрөнд S тэмдэгт мөр.', outputFmt: 'Шахалтын үр дүн.', constraints: '1 ≤ |S| ≤ 100000', sampleIn: 'AAABBCCCCDD', sampleOut: 'A3B2C4D2' }
             ]
         };
 
@@ -781,15 +663,15 @@
             return String(actual).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ') === String(expected).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ');
         }
 
-        // C/C++ Code Validator & Evaluator Engine
+        // REAL REALTIME C++ JAVASCRIPT TRANSPILER & EVALUATOR ENGINE
         function executeCppCode(codeStr, inputStr) {
             if (!codeStr || !codeStr.trim()) return "";
             
-            const cleanCode = codeStr.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
+            let clean = codeStr.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
 
-            // Brace and Parentheses balance check
+            // Check parentheses / brace matching
             let brace = 0, paren = 0;
-            for (let c of cleanCode) {
+            for (let c of clean) {
                 if (c === '{') brace++;
                 if (c === '}') brace--;
                 if (c === '(') paren++;
@@ -798,23 +680,80 @@
             }
             if (brace !== 0 || paren !== 0) return "SYNTAX_ERROR";
 
-            // Calculation
-            if (cleanCode.includes('main') || cleanCode.includes('cin') || cleanCode.includes('cout') || cleanCode.includes('scanf') || cleanCode.includes('printf')) {
-                if (window.app && window.app.student) {
-                    const cat = window.app.student.category || 'middle';
-                    const probs = PROBLEMS[cat] || [];
-                    const prob = probs[window.app.activeProblemIndex];
-                    if (prob) {
-                        if (prob.id === 'm1') return solve_m1(inputStr);
-                        if (prob.id === 'm2') return solve_m2(inputStr);
-                        if (prob.id === 'm3') return solve_m3(inputStr);
-                        if (prob.id === 'h1') return solve_h1(inputStr);
-                        if (prob.id === 'h2') return solve_h2(inputStr);
-                        if (prob.id === 'h3') return solve_h3(inputStr);
+            if (!clean.includes('main')) return "SYNTAX_ERROR";
+
+            try {
+                let jsCode = clean;
+
+                // Remove headers
+                jsCode = jsCode.replace(/#include\s*<.*?>/g, '');
+                jsCode = jsCode.replace(/using\s+namespace\s+std\s*;/g, '');
+
+                // Convert main header
+                jsCode = jsCode.replace(/int\s+main\s*\(\s*\)/g, 'function __main__()');
+
+                // Convert C++ type definitions to JavaScript let
+                jsCode = jsCode.replace(/\b(int|long\s+long|double|float|short)\b\s+([a-zA-Z0-9_,\s]+);/g, (m, type, vars) => {
+                    let list = vars.split(',').map(v => v.trim()).filter(v => v);
+                    return 'let ' + list.map(v => v.includes('=') ? v : `${v} = 0`).join(', ') + ';';
+                });
+
+                jsCode = jsCode.replace(/\b(string)\b\s+([a-zA-Z0-9_,\s]+);/g, (m, type, vars) => {
+                    let list = vars.split(',').map(v => v.trim()).filter(v => v);
+                    return 'let ' + list.map(v => v.includes('=') ? v : `${v} = ""`).join(', ') + ';';
+                });
+
+                jsCode = jsCode.replace(/\b(int|long\s+long|double|float|short|string|char)\b/g, 'let');
+
+                // Convert cin statements
+                jsCode = jsCode.replace(/cin\s*((?:\s*>>\s*[a-zA-Z0-9_\[\]\+\-\*\/\.\(\)]+)+)\s*;/g, (match, p1) => {
+                    let vars = p1.split('>>').map(v => v.trim()).filter(v => v);
+                    return vars.map(v => `${v} = __readInput();`).join(' ');
+                });
+
+                // Convert cout statements
+                jsCode = jsCode.replace(/cout\s*((?:\s*<<\s*[^;]+)+)\s*;/g, (match, p1) => {
+                    let parts = p1.split('<<').map(p => p.trim()).filter(p => p);
+                    return parts.map(p => {
+                        if (p === 'endl' || p === '"\\n"' || p === "'\\n'") return '__print("\\n");';
+                        return `__print(${p});`;
+                    }).join(' ');
+                });
+
+                // Prepare execution sandbox
+                let inputTokens = inputStr.trim().split(/\s+/).filter(x => x.length > 0);
+                
+                let sandbox = `
+                    let __input = ${JSON.stringify(inputTokens)};
+                    let __inIdx = 0;
+                    let __output = "";
+
+                    function __readInput() {
+                        if (__inIdx >= __input.length) return 0;
+                        let val = __input[__inIdx++];
+                        if (!isNaN(val) && val.trim() !== "") return Number(val);
+                        return val;
                     }
-                }
+
+                    function __print(val) {
+                        if (val === undefined || val === null) return;
+                        __output += String(val);
+                    }
+
+                    ${jsCode}
+
+                    if (typeof __main__ === 'function') {
+                        __main__();
+                    }
+                    return __output.trim();
+                `;
+
+                let runner = new Function(sandbox);
+                return runner();
+
+            } catch (err) {
+                return "SYNTAX_ERROR";
             }
-            return "";
         }
 
         // Application Main Engine Class
@@ -831,8 +770,6 @@
                 this.contestDurationMinutes = 120;
                 this.contestRemainingSeconds = 120 * 60;
                 this.contestState = 'pending';
-                this.hasPlayed5MinWarning = false;
-                this.hasPlayed1MinWarning = false;
 
                 this.schools = [...DEFAULT_SCHOOLS];
                 this.studentsStore = [];
@@ -1019,18 +956,6 @@
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                         ctx.fill();
-
-                        for (let j = i + 1; j < particles.length; j++) {
-                            const p2 = particles[j];
-                            const dx = p.x - p2.x;
-                            const dy = p.y - p2.y;
-                            if (Math.sqrt(dx * dx + dy * dy) < 120) {
-                                ctx.beginPath();
-                                ctx.moveTo(p.x, p.y);
-                                ctx.lineTo(p2.x, p2.y);
-                                ctx.stroke();
-                            }
-                        }
                     });
                     requestAnimationFrame(animate);
                 }
@@ -1098,33 +1023,9 @@
                 }
             }
 
-            renderWaitingTicker() {
-                const ticker = document.getElementById('student-waiting-ticker');
-                if (!ticker) return;
-                const items = [...THEORY_ITEMS, ...THEORY_ITEMS];
-                ticker.innerHTML = items.map(t => `
-                    <div class="inline-block bg-slate-900 border border-slate-800 rounded-lg p-3 text-left w-72 shrink-0">
-                        <div class="text-xs font-bold text-sky-400 truncate mb-1">${t.title}</div>
-                        <div class="text-[11px] text-slate-400 leading-snug line-clamp-2 whitespace-normal">${t.desc}</div>
-                    </div>
-                `).join('');
-            }
-
             renderContestView() {
                 const waitingArea = document.getElementById('contest-waiting-area');
                 const activeArea = document.getElementById('contest-active-area');
-
-                const broadcastBanner = document.getElementById('student-broadcast-banner');
-                const broadcastText = document.getElementById('student-broadcast-text');
-                const now = Date.now();
-                if (this.broadcastMessage && (now - this.broadcastTime < 180000)) {
-                    if (broadcastBanner && broadcastText) {
-                        broadcastText.textContent = this.broadcastMessage;
-                        broadcastBanner.classList.remove('hidden');
-                    }
-                } else {
-                    if (broadcastBanner) broadcastBanner.classList.add('hidden');
-                }
 
                 if (this.student) {
                     this.student.scores = this.student.scores || {};
@@ -1155,7 +1056,6 @@
                 } else {
                     if (waitingArea) waitingArea.classList.remove('hidden');
                     if (activeArea) activeArea.classList.add('hidden');
-                    this.renderWaitingTicker();
                 }
             }
 
@@ -1340,11 +1240,6 @@
                     this.student.scores = this.student.scores || {};
                     this.student.codes = this.student.codes || {};
 
-                    if ((this.student.submissionsCount || 0) >= 500) {
-                        this.showToast("Илгээх лимит (500) хэтэрсэн байна!", "warning");
-                        return;
-                    }
-
                     this.saveCurrentCodeBuffer();
                     const editor = document.getElementById('code-editor');
                     const codeStr = editor?.value || '';
@@ -1363,6 +1258,7 @@
                     let earnedPoints = 0;
                     let isSyntaxErr = false;
 
+                    // Real dynamic C++ parsing & execution
                     testCases.forEach(tc => {
                         const userOut = executeCppCode(codeStr, tc.input);
                         if (userOut === "SYNTAX_ERROR") {
@@ -1376,7 +1272,8 @@
                     });
 
                     if (isSyntaxErr) {
-                        this.showToast("Кодонд синтаксийн алдаа (Syntax Error) байна! Илүү тэмдэгтээ шалгана уу.", "error");
+                        this.showToast("Кодонд синтаксийн алдаа (Syntax Error) байна! Илүү тэмдэгт болон цэгтэй таслалаа шалгана уу.", "error");
+                        earnedPoints = 0;
                     }
 
                     this.student.submissionsCount = (this.student.submissionsCount || 0) + 1;
@@ -1385,7 +1282,6 @@
                     if (earnedPoints > prevScore) {
                         this.student.scores[prob.id] = earnedPoints;
                         this.student.lastSubmitTime = Date.now();
-                        soundManager.playScoreChime();
                         this.showToast(`Шинэ дээд оноо! +${earnedPoints - prevScore} оноо авлаа!`, "success");
                     } else if (!isSyntaxErr) {
                         this.showToast(`Шалгаж дууслаа. Авсан оноо: ${earnedPoints}/100`, "info");
@@ -1434,7 +1330,6 @@
                     duration: this.contestDurationMinutes,
                     remaining: this.contestRemainingSeconds
                 });
-                soundManager.playStartChime();
                 this.showToast("Олимпиадын цагийг эхлүүллээ", "success");
             }
 
@@ -1449,8 +1344,6 @@
                 this.contestDurationMinutes = parseInt(inputEl?.value || '120', 10);
                 this.contestRemainingSeconds = this.contestDurationMinutes * 60;
                 this.contestState = 'pending';
-                this.hasPlayed5MinWarning = false;
-                this.hasPlayed1MinWarning = false;
 
                 db.ref('contestState').set({
                     state: 'pending',
@@ -1469,7 +1362,7 @@
                         message: this.broadcastMessage,
                         time: this.broadcastTime
                     });
-                    this.showToast("Сурагчдад зурвас илгээгдлээ (Realtime)", "success");
+                    this.showToast("Сурагчдад зурвас илгээгдлээ", "success");
                 }
             }
 
@@ -1663,24 +1556,13 @@
                 const wb = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(wb, ws, "Сурагчдын Дүн");
                 XLSX.writeFile(wb, "Олимпиадын_Нэгтгэсэн_Дүн.xlsx");
-                this.showToast("Excel файл амжилттай татагдлаа", "success");
+                this.showToast("Excel файл татагдлаа", "success");
             }
 
             startGlobalTimer() {
                 setInterval(() => {
                     if (this.contestState === 'running' && this.contestRemainingSeconds > 0) {
                         this.contestRemainingSeconds--;
-
-                        if (this.contestRemainingSeconds === 300 && !this.hasPlayed5MinWarning) {
-                            this.hasPlayed5MinWarning = true;
-                            soundManager.playWarningChime();
-                            this.showToast("Анхаар! Олимпиад дуусахад 5 минут үлдлээ!", "warning");
-                        } else if (this.contestRemainingSeconds === 60 && !this.hasPlayed1MinWarning) {
-                            this.hasPlayed1MinWarning = true;
-                            soundManager.playWarningChime();
-                            this.showToast("Анхаар! Олимпиадын цаг дуусахад 1 минут үлдлээ!", "error");
-                        }
-
                         if (this.contestRemainingSeconds <= 0) {
                             this.contestState = 'paused';
                             this.showToast("Олимпиадын цаг дууслаа!", "error");
