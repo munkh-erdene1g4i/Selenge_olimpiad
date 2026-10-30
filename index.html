@@ -41,8 +41,17 @@
         }
     </script>
     <style>
+        /* Modern Animated CSS Gradient Background */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body {
-            background-color: #090d16;
+            background: linear-gradient(-45deg, #070a12, #0f172a, #0c4a6e, #1e1b4b, #032b30, #070a12);
+            background-size: 400% 400%;
+            animation: gradientMove 18s ease infinite;
             color: #f1f5f9;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
@@ -56,7 +65,7 @@
             height: 100vh;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.45;
+            opacity: 0.35;
         }
 
         ::-webkit-scrollbar {
@@ -113,10 +122,6 @@
             100% { transform: translate3d(-50%, 0, 0); }
         }
 
-        .glow-border {
-            box-shadow: 0 0 15px rgba(2, 132, 199, 0.15);
-        }
-
         @keyframes modalFadeIn {
             from {
                 opacity: 0;
@@ -128,42 +133,21 @@
             }
         }
 
-        @keyframes pulseGlow {
-            0%, 100% {
-                box-shadow: 0 0 10px rgba(2, 132, 199, 0.2), 0 0 20px rgba(2, 132, 199, 0.1);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(2, 132, 199, 0.4), 0 0 35px rgba(2, 132, 199, 0.25);
-            }
-        }
-
         .animated-modal {
             animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .glow-active {
-            animation: pulseGlow 3s infinite ease-in-out;
-        }
-
-        .card-hover-effect {
-            transition: all 0.25s ease-out;
-        }
-        .card-hover-effect:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.25);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative antialiased selection:bg-sky-500 selection:text-white">
 
-    <!-- Background Canvas -->
+    <!-- Background Canvas Overlay -->
     <canvas id="bg-canvas"></canvas>
 
     <!-- Main Wrapper -->
     <div class="relative z-10 flex flex-col flex-1 min-h-screen">
 
         <!-- Top Header Navigation Bar -->
-        <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-3">
+        <header class="border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-3">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
                 <div class="flex items-center space-x-3 cursor-pointer" onclick="app.navigateTo('role')">
                     <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center font-bold text-white text-sm tracking-wider shadow-lg">
@@ -204,7 +188,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                     <!-- Middle School Card -->
-                    <div onclick="app.selectCategory('middle')" class="group relative bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-950/40">
+                    <div onclick="app.selectCategory('middle')" class="group relative bg-slate-900/80 backdrop-blur border border-slate-800 hover:border-sky-500/50 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-950/40">
                         <div class="w-12 h-12 rounded-lg bg-sky-950 border border-sky-800 flex items-center justify-center text-sky-400 font-semibold mb-4 text-base group-hover:scale-105 transition">
                             6-10
                         </div>
@@ -218,7 +202,7 @@
                     </div>
 
                     <!-- High School Card -->
-                    <div onclick="app.selectCategory('high')" class="group relative bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-950/40">
+                    <div onclick="app.selectCategory('high')" class="group relative bg-slate-900/80 backdrop-blur border border-slate-800 hover:border-indigo-500/50 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-950/40">
                         <div class="w-12 h-12 rounded-lg bg-indigo-950 border border-indigo-800 flex items-center justify-center text-indigo-400 font-semibold mb-4 text-base group-hover:scale-105 transition">
                             11-12
                         </div>
@@ -232,7 +216,7 @@
                     </div>
 
                     <!-- Admin Card -->
-                    <div onclick="app.openAdminAuthModal()" class="group relative bg-slate-900/90 border border-slate-800 hover:border-emerald-500/50 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/40">
+                    <div onclick="app.openAdminAuthModal()" class="group relative bg-slate-900/80 backdrop-blur border border-slate-800 hover:border-emerald-500/50 rounded-xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/40">
                         <div class="w-12 h-12 rounded-lg bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400 font-semibold mb-4 text-base group-hover:scale-105 transition">
                             ADM
                         </div>
@@ -256,7 +240,7 @@
                 </div>
 
                 <!-- Top Sticky Contest Bar -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg">
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-lg backdrop-blur">
                     <div class="flex items-center space-x-4">
                         <div class="w-10 h-10 rounded-lg bg-sky-950 border border-sky-800 flex items-center justify-center font-bold text-sky-400 text-xs">
                             <span id="contest-cat-tag">ДУНД</span>
@@ -292,7 +276,7 @@
 
                 <!-- STATE A: PRE-CONTEST WAITING ROOM -->
                 <div id="contest-waiting-area" class="hidden flex-1 flex flex-col justify-center space-y-6 py-6">
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 max-w-3xl mx-auto w-full">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 max-w-3xl mx-auto w-full backdrop-blur">
                         <span class="px-3 py-1 text-xs font-mono rounded-full bg-amber-950 text-amber-400 border border-amber-800 inline-block">
                             ОЛИМПИАД ХАРААХАН ЭХЛЭЭГҮЙ БАЙНА
                         </span>
@@ -318,7 +302,7 @@
                         <div id="problem-tabs-list" class="space-y-2"></div>
                     </div>
 
-                    <div class="lg:col-span-9 bg-slate-900/90 border border-slate-800 rounded-xl p-5 md:p-7 flex flex-col justify-between space-y-6">
+                    <div class="lg:col-span-9 bg-slate-900/90 border border-slate-800 rounded-xl p-5 md:p-7 flex flex-col justify-between space-y-6 backdrop-blur">
                         <div id="problem-detail-box" class="space-y-5"></div>
 
                         <div class="space-y-4 border-t border-slate-800 pt-5">
@@ -355,7 +339,7 @@
             <!-- SECTION 4: ADMIN PORTAL -->
             <section id="view-admin" class="hidden flex-1 flex flex-col space-y-6">
                 <!-- Admin Header -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur">
                     <div>
                         <span class="px-2.5 py-1 text-xs font-mono rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
                             АДМИН УДИРДЛАГА (REALTIME SYNCHRONIZED)
@@ -375,7 +359,7 @@
                 <!-- DIRECT TOP CONTROL PANELS: TIMER, SCHOOLS & BROADCAST MESSAGE -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- 1. Timer Control Panel -->
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-4">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-4 backdrop-blur">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="font-bold text-white text-sm">Цаг ба Төлөвийн Удирдлага</h3>
                             <span id="adm-contest-status-badge" class="px-2 py-0.5 text-[10px] font-mono rounded bg-amber-950 text-amber-400 border border-amber-800">
@@ -400,7 +384,7 @@
                     </div>
 
                     <!-- 2. Admin Broadcast Message Panel -->
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3 backdrop-blur">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="font-bold text-white text-sm">Сурагчдад Зурвас Илгээх</h3>
                             <span class="text-[10px] font-mono text-sky-400 bg-sky-950 border border-sky-800 px-2 py-0.5 rounded">Шууд харагдана</span>
@@ -419,7 +403,7 @@
                     </div>
 
                     <!-- 3. School Management Panel -->
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3 backdrop-blur">
                         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
                             <h3 class="font-bold text-white text-sm">Сургуулийн Жагсаалт</h3>
                             <span id="adm-school-count-badge" class="text-[10px] text-slate-400 font-mono">20 Сургууль</span>
@@ -437,7 +421,7 @@
                 <!-- Admin Tabs for Rankings -->
                 <div class="flex border-b border-slate-800 space-x-4 pt-2">
                     <button onclick="app.switchAdminTab('leaderboard')" id="adm-tab-btn-leaderboard" class="pb-3 text-sm font-medium text-sky-400 border-b-2 border-sky-400">
-                        Сурагчдын Нэгдсэн Ранк (Бодит Цагт)
+                        Сурагчдын Нэгдсэн Ранк (Оноо & Хугацаа)
                     </button>
                     <button onclick="app.switchAdminTab('school')" id="adm-tab-btn-school" class="pb-3 text-sm font-medium text-slate-400 hover:text-white">
                         Сургуулиудын Нэгтгэсэн Дүн
@@ -446,7 +430,7 @@
 
                 <!-- ADMIN TAB 1: OVERALL LEADERBOARD -->
                 <div id="adm-content-leaderboard" class="space-y-4">
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-x-auto">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-x-auto backdrop-blur">
                         <table class="w-full text-left text-xs text-slate-300">
                             <thead class="bg-slate-950 text-slate-400 font-mono uppercase border-b border-slate-800">
                                 <tr>
@@ -459,6 +443,7 @@
                                     <th class="p-3 text-center">Б2</th>
                                     <th class="p-3 text-center">Б3</th>
                                     <th class="p-3 text-center">Нийт Оноо</th>
+                                    <th class="p-3 text-center">Сүүлийн Оноо Авсан Цаг</th>
                                     <th class="p-3 text-center">Илгээлт</th>
                                     <th class="p-3 text-center text-rose-400">Таб Шилжсэн</th>
                                 </tr>
@@ -470,7 +455,7 @@
 
                 <!-- ADMIN TAB 2: SCHOOL RANKINGS -->
                 <div id="adm-content-school" class="hidden space-y-4">
-                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-x-auto">
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-x-auto backdrop-blur">
                         <table class="w-full text-left text-xs text-slate-300">
                             <thead class="bg-slate-950 text-slate-400 font-mono uppercase border-b border-slate-800">
                                 <tr>
@@ -491,7 +476,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="border-t border-slate-800/80 bg-slate-950 py-4 text-center text-xs text-slate-500 space-y-1">
+        <footer class="border-t border-slate-800/80 bg-slate-950/90 backdrop-blur py-4 text-center text-xs text-slate-500 space-y-1">
             <div>Аймгийн Мэдээлэл Зүйн Олимпиад &copy; 2026. Бүх эрх хуулиар хамгаалагдсан.</div>
             <div class="text-[10px] text-slate-600 font-mono tracking-tight">Мандал сумын 4р сургууль | Сэлэнгэ Аймаг</div>
         </footer>
@@ -605,9 +590,7 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // -------------------------------------------------------------
-        // FIREBASE REALTIME DATABASE INITIALIZATION
-        // -------------------------------------------------------------
+        // FIREBASE REALTIME DATABASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyABeedU858DJ8815aObeD9jQnwKz86j8Xc",
             authDomain: "selenge-691f9.firebaseapp.com",
@@ -707,7 +690,7 @@
             { title: "Дарааллын урьдчилсан нийлбэр", desc: "Өмнөх элементүүдийн нийлбэрийг бэлдсэнээр завсрын нийлбэрийг хоромхон зуурт олох арга." }
         ];
 
-        // Solvers
+        // Reference Solvers
         function solve_m1(inputStr) {
             const tokens = inputStr.trim().split(/\s+/).map(Number);
             if (tokens.length < 2) return "";
@@ -842,7 +825,7 @@
             return "";
         }
 
-        // Application Main Engine Class with Firebase Integration
+        // Application Main Engine Class
         class App {
             constructor() {
                 this.currentView = 'role';
@@ -870,38 +853,30 @@
             }
 
             setupFirebaseSync() {
-                // 1. Sync Students Realtime Database
                 db.ref('students').on('value', (snapshot) => {
                     const data = snapshot.val() || {};
                     this.studentsStore = Object.values(data);
                     
-                    // Update current logged-in student ref if changed
                     if (this.student) {
                         const updatedSelf = this.studentsStore.find(s => s.id === this.student.id);
-                        if (updatedSelf) {
-                            this.student = updatedSelf;
-                        }
+                        if (updatedSelf) this.student = updatedSelf;
                     }
 
                     if (this.currentView === 'admin') this.renderAdminView();
                     if (this.currentView === 'contest') this.renderContestView();
                 });
 
-                // 2. Sync Contest Timer & State
                 db.ref('contestState').on('value', (snapshot) => {
                     const stateObj = snapshot.val();
                     if (stateObj) {
                         this.contestState = stateObj.state || 'pending';
                         this.contestDurationMinutes = stateObj.duration || 120;
-                        if (stateObj.remaining !== undefined) {
-                            this.contestRemainingSeconds = stateObj.remaining;
-                        }
+                        if (stateObj.remaining !== undefined) this.contestRemainingSeconds = stateObj.remaining;
                         this.updateAdminStatusBadge();
                         if (this.currentView === 'contest') this.renderContestView();
                     }
                 });
 
-                // 3. Sync Broadcast Messages
                 db.ref('broadcast').on('value', (snapshot) => {
                     const bObj = snapshot.val();
                     if (bObj) {
@@ -911,7 +886,6 @@
                     }
                 });
 
-                // 4. Sync School List
                 db.ref('schools').on('value', (snapshot) => {
                     const sArr = snapshot.val();
                     if (sArr && Array.isArray(sArr)) {
@@ -937,9 +911,7 @@
                 this.selectedCategory = category;
                 const modal = document.getElementById('student-register-modal');
                 const title = document.getElementById('reg-category-title');
-                if (title) {
-                    title.textContent = category === 'middle' ? 'Дунд анги (6-10) Нэвтрэх' : 'Ахлах анги (11-12) Нэвтрэх';
-                }
+                if (title) title.textContent = category === 'middle' ? 'Дунд анги (6-10) Нэвтрэх' : 'Ахлах анги (11-12) Нэвтрэх';
                 this.renderSchoolsDropdown();
                 if (modal) modal.classList.remove('hidden');
             }
@@ -973,6 +945,7 @@
                         category: this.selectedCategory,
                         scores: {},
                         codes: {},
+                        lastSubmitTime: 0,
                         submissionsCount: 0,
                         tabSwitches: 0
                     };
@@ -1025,18 +998,18 @@
                     height = canvas.height = window.innerHeight;
                 });
 
-                const particles = Array.from({ length: 45 }, () => ({
+                const particles = Array.from({ length: 35 }, () => ({
                     x: Math.random() * width,
                     y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
                     radius: Math.random() * 2 + 1
                 }));
 
                 function animate() {
                     ctx.clearRect(0, 0, width, height);
-                    ctx.fillStyle = 'rgba(2, 132, 199, 0.4)';
-                    ctx.strokeStyle = 'rgba(2, 132, 199, 0.08)';
+                    ctx.fillStyle = 'rgba(2, 132, 199, 0.3)';
+                    ctx.strokeStyle = 'rgba(2, 132, 199, 0.06)';
 
                     particles.forEach((p, i) => {
                         p.x += p.vx;
@@ -1401,8 +1374,11 @@
 
                 this.student.submissionsCount = (this.student.submissionsCount || 0) + 1;
                 const prevScore = this.student.scores?.[prob.id] || 0;
+                
+                // Track time if score increased
                 if (earnedPoints > prevScore) {
                     this.student.scores[prob.id] = earnedPoints;
+                    this.student.lastSubmitTime = Date.now(); // Tie-breaker timestamp
                     soundManager.playScoreChime();
                     this.showToast(`Шинэ дээд оноо! +${earnedPoints - prevScore} оноо авлаа!`, "success");
                 } else {
@@ -1550,15 +1526,25 @@
                 const tbody = document.getElementById('admin-student-table');
                 if (!tbody) return;
 
+                // Tie-breaker Sorting Logic:
+                // 1. Total Score (descending)
+                // 2. Last Score-improving submit timestamp (ascending - earlier is better)
+                // 3. Total Submissions Count (ascending - fewer is better)
                 const sorted = [...this.studentsStore].sort((a, b) => {
                     const sumA = Object.values(a.scores || {}).reduce((x, y) => x + y, 0);
                     const sumB = Object.values(b.scores || {}).reduce((x, y) => x + y, 0);
+                    
                     if (sumB !== sumA) return sumB - sumA;
+
+                    const timeA = a.lastSubmitTime || Infinity;
+                    const timeB = b.lastSubmitTime || Infinity;
+                    if (timeA !== timeB) return timeA - timeB;
+
                     return (a.submissionsCount || 0) - (b.submissionsCount || 0);
                 });
 
                 if (sorted.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-slate-500">Одоогоор сурагч бүртгэгдээгүй байна.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="12" class="p-6 text-center text-slate-500">Одоогоор сурагч бүртгэгдээгүй байна.</td></tr>`;
                     return;
                 }
 
@@ -1568,6 +1554,10 @@
                     const p3 = s.scores?.['m3'] || s.scores?.['h3'] || 0;
                     const total = p1 + p2 + p3;
                     const catLabel = s.category === 'middle' ? 'Дунд' : 'Ахлах';
+                    
+                    const timeFormatted = s.lastSubmitTime 
+                        ? new Date(s.lastSubmitTime).toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+                        : '-';
 
                     return `<tr class="hover:bg-slate-800/50 transition">
                         <td class="p-3 font-mono font-bold text-slate-300">${idx + 1}</td>
@@ -1579,6 +1569,7 @@
                         <td class="p-3 text-center font-mono ${p2 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p2}</td>
                         <td class="p-3 text-center font-mono ${p3 > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${p3}</td>
                         <td class="p-3 text-center font-mono font-bold text-emerald-400 text-sm">${total}</td>
+                        <td class="p-3 text-center font-mono text-sky-400">${timeFormatted}</td>
                         <td class="p-3 text-center font-mono text-slate-400">${s.submissionsCount || 0}</td>
                         <td class="p-3 text-center font-mono font-bold text-rose-400">${s.tabSwitches || 0}</td>
                     </tr>`;
@@ -1657,6 +1648,7 @@
                     "Бодлого 2": s.scores?.['m2'] || s.scores?.['h2'] || 0,
                     "Бодлого 3": s.scores?.['m3'] || s.scores?.['h3'] || 0,
                     "Нийт Оноо": Object.values(s.scores || {}).reduce((x, y) => x + y, 0),
+                    "Сүүлийн Оноо Авсан Цаг": s.lastSubmitTime ? new Date(s.lastSubmitTime).toLocaleTimeString('mn-MN') : '-',
                     "Илгээлт Илгээсэн": s.submissionsCount || 0,
                     "Таб Шилжсэн": s.tabSwitches || 0
                 }));
@@ -1680,7 +1672,7 @@
                         } else if (this.contestRemainingSeconds === 60 && !this.hasPlayed1MinWarning) {
                             this.hasPlayed1MinWarning = true;
                             soundManager.playWarningChime();
-                            this.showToast("Анхаар! Олимпиад дуусахад 1 минут үлдлээ!", "error");
+                            this.showToast("Анхаар! Олимпиадын цаг дуусахад 1 минут үлдлээ!", "error");
                         }
 
                         if (this.contestRemainingSeconds <= 0) {
