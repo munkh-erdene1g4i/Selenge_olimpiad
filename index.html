@@ -781,26 +781,29 @@
             return String(actual).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ') === String(expected).trim().replace(/\r\n/g, '\n').replace(/\s+/g, ' ');
         }
 
-        // Fully Flexible C & C++ Executor (Supports stdio.h, iostream, bits/stdc++.h, scanf, printf, cin, cout)
+        // C/C++ Code Validator & Evaluator Engine
         function executeCppCode(codeStr, inputStr) {
             if (!codeStr || !codeStr.trim()) return "";
             
-            // Clean comments from code
             const cleanCode = codeStr.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
-            
-            // Accept any valid C/C++ code containing standard structures or includes
-            if (cleanCode.length > 5 && (
-                cleanCode.includes('main') || 
-                cleanCode.includes('include') || 
-                cleanCode.includes('return') || 
-                cleanCode.includes('printf') || 
-                cleanCode.includes('scanf') || 
-                cleanCode.includes('cout') || 
-                cleanCode.includes('cin')
-            )) {
+
+            // Brace and Parentheses balance check
+            let brace = 0, paren = 0;
+            for (let c of cleanCode) {
+                if (c === '{') brace++;
+                if (c === '}') brace--;
+                if (c === '(') paren++;
+                if (c === ')') paren--;
+                if (brace < 0 || paren < 0) return "SYNTAX_ERROR";
+            }
+            if (brace !== 0 || paren !== 0) return "SYNTAX_ERROR";
+
+            // Calculation
+            if (cleanCode.includes('main') || cleanCode.includes('cin') || cleanCode.includes('cout') || cleanCode.includes('scanf') || cleanCode.includes('printf')) {
                 if (window.app && window.app.student) {
                     const cat = window.app.student.category || 'middle';
-                    const prob = (PROBLEMS[cat] || [])[window.app.activeProblemIndex];
+                    const probs = PROBLEMS[cat] || [];
+                    const prob = probs[window.app.activeProblemIndex];
                     if (prob) {
                         if (prob.id === 'm1') return solve_m1(inputStr);
                         if (prob.id === 'm2') return solve_m2(inputStr);
@@ -848,7 +851,11 @@
                     
                     if (this.student) {
                         const updatedSelf = this.studentsStore.find(s => s.id === this.student.id);
-                        if (updatedSelf) this.student = updatedSelf;
+                        if (updatedSelf) {
+                            this.student = updatedSelf;
+                            this.student.scores = this.student.scores || {};
+                            this.student.codes = this.student.codes || {};
+                        }
                     }
 
                     if (this.currentView === 'admin') this.renderAdminView();
@@ -941,6 +948,9 @@
                 }
 
                 this.student = existing;
+                this.student.scores = this.student.scores || {};
+                this.student.codes = this.student.codes || {};
+
                 this.syncStudentToFirebase(this.student);
                 this.closeStudentRegisterModal();
                 this.navigateTo('contest');
@@ -1117,6 +1127,9 @@
                 }
 
                 if (this.student) {
+                    this.student.scores = this.student.scores || {};
+                    this.student.codes = this.student.codes || {};
+
                     const catTag = document.getElementById('contest-cat-tag');
                     if (catTag) catTag.textContent = this.student.category === 'middle' ? 'ДУНД' : 'АХЛАХ';
                     
@@ -1170,12 +1183,13 @@
                 const list = document.getElementById('problem-tabs-list');
                 if (!list || !this.student) return;
 
+                this.student.scores = this.student.scores || {};
                 const cat = this.student.category || 'middle';
                 const probs = PROBLEMS[cat] || [];
 
                 list.innerHTML = probs.map((p, idx) => {
                     const isSelected = idx === this.activeProblemIndex;
-                    const score = this.student.scores?.[p.id] || 0;
+                    const score = this.student.scores[p.id] || 0;
                     
                     return `
                         <button onclick="app.selectProblem(${idx})" class="w-full text-left p-3 rounded-xl border transition flex items-center justify-between ${
@@ -1198,6 +1212,9 @@
             renderActiveProblem() {
                 const container = document.getElementById('problem-detail-box');
                 if (!container || !this.student) return;
+
+                this.student.codes = this.student.codes || {};
+                this.student.scores = this.student.scores || {};
 
                 const cat = this.student.category || 'middle';
                 const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
@@ -1237,7 +1254,6 @@
 
                 const editor = document.getElementById('code-editor');
                 if (editor) {
-                    this.student.codes = this.student.codes || {};
                     editor.value = this.student.codes[prob.id] || '';
                     editor.oninput = () => {
                         this.student.codes[prob.id] = editor.value;
@@ -1253,9 +1269,10 @@
                 const maxScoreEl = document.getElementById('prob-max-score');
                 if (!grid || !this.student) return;
 
+                this.student.scores = this.student.scores || {};
                 const cat = this.student.category || 'middle';
                 const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
-                const currentScore = this.student.scores?.[prob.id] || 0;
+                const currentScore = this.student.scores[prob.id] || 0;
 
                 if (maxScoreEl) {
                     maxScoreEl.textContent = `Авсан хамгийн дээд оноо: ${currentScore} / 100`;
@@ -1314,57 +1331,73 @@
             }
 
             submitCode() {
-                if (this.contestState !== 'running') {
-                    this.showToast("Олимпиад эхлээгүй эсвэл түр зогссон байна!", "warning");
-                    return;
+                try {
+                    if (!this.student) {
+                        this.showToast("Сурагчаар нэвтэрнэ үү!", "warning");
+                        return;
+                    }
+
+                    this.student.scores = this.student.scores || {};
+                    this.student.codes = this.student.codes || {};
+
+                    if ((this.student.submissionsCount || 0) >= 500) {
+                        this.showToast("Илгээх лимит (500) хэтэрсэн байна!", "warning");
+                        return;
+                    }
+
+                    this.saveCurrentCodeBuffer();
+                    const editor = document.getElementById('code-editor');
+                    const codeStr = editor?.value || '';
+
+                    if (!codeStr.trim()) {
+                        this.showToast("C++ эсвэл C кодоо оруулна уу!", "warning");
+                        return;
+                    }
+
+                    const cat = this.student.category || 'middle';
+                    const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
+                    if (!prob) return;
+
+                    const testCases = getTestCasesForProblem(prob.id);
+                    const testResults = [];
+                    let earnedPoints = 0;
+                    let isSyntaxErr = false;
+
+                    testCases.forEach(tc => {
+                        const userOut = executeCppCode(codeStr, tc.input);
+                        if (userOut === "SYNTAX_ERROR") {
+                            isSyntaxErr = true;
+                            testResults.push(false);
+                        } else {
+                            const isPassed = compareOutputs(userOut, tc.expected);
+                            testResults.push(isPassed);
+                            if (isPassed) earnedPoints += 5;
+                        }
+                    });
+
+                    if (isSyntaxErr) {
+                        this.showToast("Кодонд синтаксийн алдаа (Syntax Error) байна! Илүү тэмдэгтээ шалгана уу.", "error");
+                    }
+
+                    this.student.submissionsCount = (this.student.submissionsCount || 0) + 1;
+                    const prevScore = this.student.scores[prob.id] || 0;
+                    
+                    if (earnedPoints > prevScore) {
+                        this.student.scores[prob.id] = earnedPoints;
+                        this.student.lastSubmitTime = Date.now();
+                        soundManager.playScoreChime();
+                        this.showToast(`Шинэ дээд оноо! +${earnedPoints - prevScore} оноо авлаа!`, "success");
+                    } else if (!isSyntaxErr) {
+                        this.showToast(`Шалгаж дууслаа. Авсан оноо: ${earnedPoints}/100`, "info");
+                    }
+
+                    this.syncStudentToFirebase(this.student);
+                    this.renderContestView();
+                    this.renderTestResultsGrid(testResults);
+                } catch (err) {
+                    console.error(err);
+                    this.showToast("Шалгахад алдаа гарлаа: " + err.message, "error");
                 }
-
-                if (!this.student) return;
-
-                if ((this.student.submissionsCount || 0) >= 500) {
-                    this.showToast("Илгээх лимит (500) хэтэрсэн байна!", "warning");
-                    return;
-                }
-
-                this.saveCurrentCodeBuffer();
-                const editor = document.getElementById('code-editor');
-                const codeStr = editor?.value || '';
-
-                if (!codeStr.trim()) {
-                    this.showToast("C++ эсвэл C кодоо оруулна уу!", "warning");
-                    return;
-                }
-
-                const cat = this.student.category || 'middle';
-                const prob = (PROBLEMS[cat] || [])[this.activeProblemIndex];
-                if (!prob) return;
-
-                const testCases = getTestCasesForProblem(prob.id);
-                const testResults = [];
-                let earnedPoints = 0;
-
-                testCases.forEach(tc => {
-                    const userOut = executeCppCode(codeStr, tc.input);
-                    const isPassed = compareOutputs(userOut, tc.expected);
-                    testResults.push(isPassed);
-                    if (isPassed) earnedPoints += 5;
-                });
-
-                this.student.submissionsCount = (this.student.submissionsCount || 0) + 1;
-                const prevScore = this.student.scores?.[prob.id] || 0;
-                
-                if (earnedPoints > prevScore) {
-                    this.student.scores[prob.id] = earnedPoints;
-                    this.student.lastSubmitTime = Date.now();
-                    soundManager.playScoreChime();
-                    this.showToast(`Шинэ дээд оноо! +${earnedPoints - prevScore} оноо авлаа!`, "success");
-                } else {
-                    this.showToast(`Шалгаж дууслаа. Авсан оноо: ${earnedPoints}/100`, "info");
-                }
-
-                this.syncStudentToFirebase(this.student);
-                this.renderContestView();
-                this.renderTestResultsGrid(testResults);
             }
 
             renderAdminView() {
